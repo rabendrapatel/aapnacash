@@ -1,0 +1,273 @@
+<ngx-spinner name="main-spiner" bdColor="rgba(51,51,51,0.8)" [fullScreen]="true" size="medium" color="#ff9933  "
+  type="ball-pulse">
+  <p style="font-size: 20px; color: rgb(194, 155, 155)">{{loadingText}}</p>
+</ngx-spinner>
+
+<div class="col-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title text-center border-buttom">Search Customer</h4>
+      <form [formGroup]="searchForm">
+        <div class="row">
+          <div class="col-sm-3">
+            <div class="form-group">
+              <label class="label">Mobile Number</label>
+              <input type="text" class="form-control" formControlName="mobileNo" (keyup)="searchCustomer()" pKeyFilter="int" maxlength="10" />
+
+              <mat-error *ngIf="searchForm.controls['mobileNo'].invalid && (searchForm.controls['mobileNo'].dirty || searchForm.controls['mobileNo'].touched)">
+                Mobile number required
+              </mat-error>
+            </div>
+          </div>
+
+          <div class="col-sm-9">
+            <div class="form-group">
+              <label class="label"></label><br>
+              <button type="button" (click)="searchCustomer(event)" class="btn btn-gradient-info "
+                style="height: 38px;padding-top: 13px;">Search</button>
+              &nbsp;&nbsp;
+              <button *ngIf="isEncasement" type="button" class="btn btn-gradient-info " style="height: 38px;padding-top: 13px;" [routerLink]="['../../transaction/doencashment']">Encasement</button>
+            </div>
+          </div>
+
+        </div>
+      </form>
+
+      <div *ngIf="showCustomerPage">
+        <form [formGroup]="createForm">
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="heading">Customer Details</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Customer Name</label>
+                <input type="text" class="form-control" formControlName="customerName" />
+                <mat-error
+                  *ngIf="createForm.controls['customerName'].invalid && (createForm.controls['customerName'].dirty || createForm.controls['customerName'].touched)">
+                  Customer name required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Mobile Number</label>
+                <input type="text" class="form-control" formControlName="mobileNo" pKeyFilter="int" maxlength="10" />
+
+                <mat-error
+                  *ngIf="createForm.controls['mobileNo'].invalid && (createForm.controls['mobileNo'].dirty || createForm.controls['mobileNo'].touched)">
+                  Mobile number required
+                </mat-error>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Email</label>
+                <input type="text" class="form-control" formControlName="email" />
+                <mat-error
+                  *ngIf="createForm.controls['email'].invalid && (createForm.controls['email'].dirty || createForm.controls['email'].touched)">
+                  Email required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Customer Type</label>
+                <p-dropdown formControlName="customerType" styleClass="form-control form-control-sm"
+                  [options]="customerTypeList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}">
+                </p-dropdown>
+
+                <mat-error
+                  *ngIf="createForm.controls['customerType'].invalid && (createForm.controls['customerType'].dirty || createForm.controls['customerType'].touched)">
+                  Customer type required
+                </mat-error>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Document Type</label>
+                <p-dropdown formControlName="docType" styleClass="form-control form-control-sm"
+                  [options]="docTypeList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}">
+                </p-dropdown>
+
+                <mat-error
+                  *ngIf="createForm.controls['docType'].invalid && (createForm.controls['docType'].dirty || createForm.controls['docType'].touched)">
+                  Document type required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Document No.</label>
+                <input type="text" class="form-control" formControlName="documentNo" />
+                <mat-error
+                  *ngIf="createForm.controls['documentNo'].invalid && (createForm.controls['documentNo'].dirty || createForm.controls['documentNo'].touched)">
+                  DocumentNo required
+                </mat-error>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Choose Doc</label>
+                <p-fileUpload #photos accept="image/*" maxFileSize="1000000" [showCancelButton]=false
+                  [showUploadButton]=false (onSelect)="onDocPhotoSelect($event)"></p-fileUpload>
+              </div>
+              <a href="javascript:void(0)" style="float: left;
+                margin-top: -21px;" (click)="viewDocument=true" >{{createForm.value.fileName}}</a>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Profile Type</label>
+                <p-dropdown formControlName="profileType" styleClass="form-control form-control-sm"
+                  [options]="profileTypeList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}">
+                </p-dropdown>
+
+                <mat-error
+                  *ngIf="createForm.controls['profileType'].invalid && (createForm.controls['profileType'].dirty || createForm.controls['profileType'].touched)">
+                  Profile type required
+                </mat-error>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Arrival Date</label>
+                <p-calendar formControlName="arrivalDate" dateFormat="yy-dd-mm" inputId="dateformat"
+                  styleClass="date-picker"></p-calendar>
+
+                <mat-error
+                  *ngIf="createForm.controls['arrivalDate'].invalid && (createForm.controls['arrivalDate'].dirty || createForm.controls['arrivalDate'].touched)">
+                  Arrival date required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Gender</label><br>
+                <mat-radio-group formControlName="gender">
+                  <mat-radio-button value="Male">Male</mat-radio-button>
+                  &nbsp;&nbsp;&nbsp;
+                  <mat-radio-button value="Female">Female</mat-radio-button>
+                  &nbsp;&nbsp;&nbsp;
+                  <mat-radio-button value="Other">Other</mat-radio-button>
+                </mat-radio-group>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="heading">Customer Address</div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Address Type</label>
+                <p-dropdown formControlName="addressType" styleClass="form-control form-control-sm"
+                  [options]="addressTypeList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}">
+                </p-dropdown>
+
+                <mat-error  *ngIf="createForm.controls['addressType'].invalid && (createForm.controls['addressType'].dirty || createForm.controls['addressType'].touched)">
+                  Address type required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Country</label>
+                <p-dropdown formControlName="country" styleClass="form-control form-control-sm" [options]="countryList" optionLabel="name" placeholder="Select" [filter]="true" [style]="{'width':'100%'}" (onChange)="getAllStateList($event)"></p-dropdown>
+
+                <mat-error *ngIf="createForm.controls['country'].invalid && (createForm.controls['country'].dirty || createForm.controls['country'].touched)">
+                  Country required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">State</label>
+                <p-dropdown formControlName="state" styleClass="form-control form-control-sm" [options]="stateList" optionLabel="name" placeholder="Select" [filter]="true" [style]="{'width':'100%'}" (onChange)="getAllCityList($event)"></p-dropdown>
+
+                <mat-error *ngIf="createForm.controls['state'].invalid && (createForm.controls['state'].dirty || createForm.controls['state'].touched)">
+                  State required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">City</label>
+                <p-dropdown formControlName="city" styleClass="form-control form-control-sm" [options]="cityList" optionLabel="name" placeholder="Select" [filter]="true" [style]="{'width':'100%'}"></p-dropdown>
+
+                <mat-error *ngIf="createForm.controls['city'].invalid && (createForm.controls['city'].dirty || createForm.controls['city'].touched)">
+                  City required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Pin code</label>
+                <input formControlName="pinCode" type="text" class="form-control form-control-lg" maxlength="6">
+
+                <mat-error *ngIf="createForm.controls['pinCode'].invalid && (createForm.controls['pinCode'].dirty || createForm.controls['pinCode'].touched)">
+                  PinCode required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Address</label>
+                <textarea formControlName="address" type="text" class="form-control" style="height: 40px;"></textarea>
+
+                <mat-error *ngIf="createForm.controls['address'].invalid && (createForm.controls['address'].dirty || createForm.controls['address'].touched)">
+                  Address required
+                </mat-error>
+              </div>
+            </div>
+          </div>
+
+          <div class="col-sm-6">
+            <div class="form-group">
+              <p-dialog header="Document View" [(visible)]="viewDocument" [style]="{width: '50%', height:'400px'}" [baseZIndex]="10000">
+                <p style="text-align: center;"><img src="{{docUrl}}{{createForm.value.fileName}}" height="350" width="600"></p>
+              </p-dialog>
+            </div>
+          </div>
+
+          <div class="text-center">
+            <button type="button" (click)="saveCustomer()" class="btn btn-gradient-info btn-rounded btn-fw">
+              <span  *ngIf="!isEncasement">Save</span>
+              <span  *ngIf="isEncasement">Update</span>
+            </button>
+          </div>
+
+        </form>
+      </div>
+    </div>
+  </div>
+</div>

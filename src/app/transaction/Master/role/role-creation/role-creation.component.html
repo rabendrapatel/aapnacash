@@ -1,0 +1,224 @@
+<ngx-spinner name="main-spiner" bdColor="rgba(51,51,51,0.8)" [fullScreen]="true" size="medium" color="#ff9933  " type="ball-pulse">
+    <p style="font-size: 20px; color: rgb(194, 155, 155)">{{loadingText}}</p>
+</ngx-spinner>
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title text-center border-buttom">Permission Creation</h4>
+
+            <ngb-tabset class="tab-vertical">
+
+                <ngb-tab>
+                    <ng-template ngbTabTitle>
+                        Permission Details
+                    </ng-template>
+                    <ng-template ngbTabContent>
+                        <form [formGroup]="creationForm">
+
+                            <div class="row">
+                                <div class="col-sm-12 form-group">
+                                    <mat-radio-group formControlName="roleType" [(ngModel)]="isNewPermission" >
+                                        <mat-radio-button value="1">Existing</mat-radio-button>
+                                        &nbsp; &nbsp; &nbsp; &nbsp;
+                                        <mat-radio-button value="2" [checked]="true" >New</mat-radio-button>
+                                    </mat-radio-group>
+                                </div>
+                            </div>
+
+                            <div class="row" *ngIf="isNewPermission==1">
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="label">Permission Name</label>
+                                        <p-dropdown formControlName="roleId" styleClass="form-control form-control-sm" [options]="roleList" optionLabel="roleName" placeholder="Select" [style]="{'width':'100%'}" (onChange)="setAssignPermission($event)"></p-dropdown>
+
+                                        <mat-error *ngIf="creationForm.controls['roleId'].invalid && (creationForm.controls['roleId'].dirty || creationForm.controls['roleId'].touched)">
+                                          Permission name required
+                                        </mat-error>
+                                    </div>
+                                </div>
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="label">Status</label>
+                                        <select class="form-control" formControlName="status">
+                                          <option value="1" selected >Active</option>
+                                          <option value="2">In Active</option>
+                                        </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div class="row" *ngIf="isNewPermission==2">
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="label">Permission Name</label>
+                                        <input type="text" class="form-control" formControlName="roleName" />
+
+                                        <mat-error *ngIf="creationForm.controls['roleName'].invalid && (creationForm.controls['roleName'].dirty || creationForm.controls['roleName'].touched)">
+                                            Permission name required
+                                        </mat-error>
+                                    </div>
+                                </div>
+
+                                <div class="col-sm-6">
+                                    <div class="form-group">
+                                        <label class="label">Status</label>
+                                        <select class="form-control" formControlName="status">
+                                          <option value="1" selected>Active</option>
+                                          <option value="2" >In Active</option>
+                                       </select>
+                                    </div>
+                                </div>
+                            </div>
+
+                        </form>
+                    </ng-template>
+                </ngb-tab>
+
+                <ngb-tab *ngFor="let permission of permissionList; let i = index">
+                    <ng-template ngbTabTitle>
+                        {{permission.fld_name}}
+                    </ng-template>
+
+                    <ng-template ngbTabContent>
+
+                        <table class="table table-blue table-striped">
+
+                            <tr style="background: black;">
+                                <th>Permission</th>
+                                <th>Create</th>
+                                <th>View</th>
+                                <th>Modify</th>
+                                <th>Delete</th>
+                                <th>Export</th>
+                                <th>Print</th>
+                            </tr>
+
+                            <tr *ngIf="permission.fld_children_level==0 || permission.fld_children_level==1">
+                                <td> {{permission.fld_name}}</td>
+                                <td>
+                                    <div class="all-check" *ngIf="permission.fld_create">
+                                        <p-checkbox value="{{permission.fld_create}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="all-check" *ngIf="permission.fld_view">
+                                        <p-checkbox value="{{permission.fld_view}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="all-check" *ngIf="permission.fld_modify">
+                                        <p-checkbox value="{{permission.fld_modify}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="all-check" *ngIf="permission.fld_delete">
+                                        <p-checkbox value="{{permission.fld_delete}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="all-check" *ngIf="permission.fld_export">
+                                        <p-checkbox value="{{permission.fld_export}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                    </div>
+                                </td>
+                                <td>
+                                    <div class="all-check" *ngIf="permission.fld_print">
+                                        <p-checkbox value="{{permission.fld_print}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                    </div>
+                                </td>
+                            </tr>
+
+                            <ng-template ngFor let-permission1 [ngForOf]="permission.children">
+
+                                <tr>
+                                    <td>
+                                        {{permission1.fld_name}}
+                                    </td>
+                                    <td>
+                                        <div class="all-check" *ngIf="permission1.fld_create">
+                                            <p-checkbox value="{{permission1.fld_create}}" (onChange)="checkedParent(permission.fld_create,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="all-check" *ngIf="permission1.fld_view">
+                                            <p-checkbox value="{{permission1.fld_view}}" (onChange)="checkedParent(permission.fld_view,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="all-check" *ngIf="permission1.fld_modify">
+                                            <p-checkbox value="{{permission1.fld_modify}}" (onChange)="checkedParent(permission.fld_modify,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="all-check" *ngIf="permission1.fld_delete">
+                                            <p-checkbox value="{{permission1.fld_delete}}" (onChange)="checkedParent(permission.fld_delete,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="all-check" *ngIf="permission1.fld_export">
+                                            <p-checkbox value="{{permission1.fld_export}}" (onChange)="checkedParent(permission.fld_export,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        </div>
+                                    </td>
+                                    <td>
+                                        <div class="all-check" *ngIf="permission1.fld_print">
+                                            <p-checkbox value="{{permission1.fld_print}}" (onChange)="checkedParent(permission.fld_print,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        </div>
+                                    </td>
+                                </tr>
+
+                                <ng-template ngFor let-permission2 [ngForOf]=" permission1.children">
+                                    <tr>
+                                        <td class="sub-row">
+                                            {{permission2.fld_name}}
+                                        </td>
+                                        <td class="sub-row">
+                                            <div class="all-check" *ngIf="permission2.fld_create">
+                                                <p-checkbox value="{{permission2.fld_create}}" (onChange)="checkedParent1(permission.fld_create,permission1.fld_create,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            </div>
+                                        </td>
+                                        <td class="sub-row">
+                                            <div class="all-check" *ngIf="permission2.fld_view">
+                                                <p-checkbox value="{{permission2.fld_view}}" (onChange)="checkedParent1(permission.fld_view,permission1.fld_view,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            </div>
+                                        </td>
+                                        <td class="sub-row">
+                                            <div class="all-check" *ngIf="permission2.fld_modify">
+                                                <p-checkbox value="{{permission2.fld_modify}}" (onChange)="checkedParent1(permission.fld_modify,permission1.fld_modify,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            </div>
+                                        </td>
+                                        <td class="sub-row">
+                                            <div class="all-check" *ngIf="permission2.fld_delete">
+                                                <p-checkbox value="{{permission2.fld_delete}}" (onChange)="checkedParent1(permission.fld_delete,permission1.fld_delete,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            </div>
+                                        </td>
+                                        <td class="sub-row">
+                                            <div class="all-check" *ngIf="permission2.fld_export">
+                                                <p-checkbox value="{{permission2.fld_export}}" (onChange)="checkedParent1(permission.fld_export,permission1.fld_export,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            </div>
+                                        </td>
+                                        <td class="sub-row">
+                                            <div class="all-check" *ngIf="permission2.fld_print">
+                                                <p-checkbox value="{{permission2.fld_print}}" (onChange)="checkedParent1(permission1.fld_print,permission1.fld_print,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            </div>
+                                        </td>
+                                    </tr>
+                                </ng-template>
+                            </ng-template>
+                        </table>
+
+                    </ng-template>
+                </ngb-tab>
+            </ngb-tabset>
+
+            <div class="mt-2 text-center" *ngIf="creationForm.value.roleType==1">
+                <button type="button" class="btn btn-gradient-info btn-rounded btn-fw" (click)="updatePermissionMaster()">Update</button>
+            </div>
+
+            <div class="mt-2 text-center" *ngIf="creationForm.value.roleType==2">
+                <button type="button" class="btn btn-gradient-info btn-rounded btn-fw" (click)="savePermissionMaster()">Save</button>
+            </div>
+
+        </div>
+    </div>
+</div>

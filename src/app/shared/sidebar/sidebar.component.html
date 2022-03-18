@@ -1,0 +1,60 @@
+<nav class="sidebar sidebar-offcanvas" id="sidebar">
+
+    <p-tieredMenu #menu [model]="menuList" styleClass="menu-container"></p-tieredMenu>
+    <ul class="nav">
+        <!-- <li class="nav-item" [ngClass]="{ 'active': dashboard.isActive }">
+      <a class="nav-link" routerLink="transaction/dashboard" routerLinkActive #dashboard="routerLinkActive">
+        <i class="mdi mdi-home menu-icon link"></i> &nbsp;
+        <span class="menu-title">Dashboard</span>
+      </a>
+    </li>
+
+    <li class="nav-item" [ngClass]="{'active' : accordions.isActive || buttons.isActive }">
+      <a class="nav-link" (click)="uiBasicCollapsed = !uiBasicCollapsed" [attr.aria-expanded]="uiBasicCollapsed" aria-controls="ui-basic">
+        <i class="mdi mdi-account-multiple-plus menu-icon link"></i>&nbsp;
+        <span class="menu-title">User</span>
+        <i class="menu-arrow"></i>
+      </a>
+
+      <div class="collapse" id="ui-basic" [ngbCollapse]="!uiBasicCollapsed">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/employeecreation" routerLinkActive="active" #accordions="routerLinkActive">New Employee</a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/employeelist" routerLinkActive="active" #buttons="routerLinkActive">Employee List</a></li>
+        </ul>
+      </div>
+    </li>
+
+    <li class="nav-item" [ngClass]="{'active' : accordions.isActive || buttons.isActive }">
+      <a class="nav-link" (click)="uiMasterCollapsed = !uiMasterCollapsed" [attr.aria-expanded]="uiMasterCollapsed" aria-controls="ui-master">
+        <i class="mdi mdi-apps menu-icon link"></i>&nbsp;
+        <span class="menu-title">Master</span>
+        <i class="menu-arrow"></i>
+      </a>
+
+      <div class="collapse" id="ui-master" [ngbCollapse]="!uiMasterCollapsed">
+        <ul class="nav flex-column sub-menu">
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/assetcreation" routerLinkActive="active" #accordions="routerLinkActive">Create Asset</a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/assetlist" routerLinkActive="active" #buttons="routerLinkActive">Asset List</a></li>
+
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/equipmentoperatorcreation" routerLinkActive="active" #accordions="routerLinkActive">Create Operator</a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/equipmentoperatorlist" routerLinkActive="active" #buttons="routerLinkActive">Operator List</a></li>
+
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/materialcreation" routerLinkActive="active" #accordions="routerLinkActive">Create Material</a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/materiallist" routerLinkActive="active" #buttons="routerLinkActive">Material List</a></li>
+
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/maintenancecreation" routerLinkActive="active" #accordions="routerLinkActive">Create Maintenance</a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/maintenancelist" routerLinkActive="active" #buttons="routerLinkActive">Maintenance List</a></li>
+
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/projectcreation" routerLinkActive="active" #accordions="routerLinkActive">Create Project</a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/projectlist" routerLinkActive="active" #buttons="routerLinkActive">Project List</a></li>
+
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/unitcreation" routerLinkActive="active" #accordions="routerLinkActive">Crete Unit</a></li>
+          <li class="nav-item"> <a class="nav-link" routerLink="transaction/unitlist" routerLinkActive="active" #buttons="routerLinkActive">Unit List</a></li>
+
+        </ul>
+      </div>
+    </li> -->
+
+
+    </ul>
+</nav>

@@ -1,0 +1,228 @@
+/* You can add global styles to this file, and also import other style files */
+
+@import "~bootstrap/scss/functions";
+@import "~bootstrap/scss/variables";
+@import './assets/scss/variables';
+@import "~compass-mixins/lib/compass";
+@import "~compass-mixins/lib/animate";
+@import "~bootstrap/scss/bootstrap";
+@import "./assets/scss/fonts";
+@import "./assets/scss/functions";
+
+/* === Icon fonts === */
+
+@import "~@mdi/font/scss/materialdesignicons";
+
+/* === Template mixins === */
+
+@import "./assets/scss/mixins/animation";
+@import "./assets/scss/mixins/badges";
+@import "./assets/scss/mixins/buttons";
+@import "./assets/scss/mixins/misc";
+@import "./assets/scss/mixins/color-functions";
+@import "./assets/scss/mixins/cards";
+@import "./assets/scss/mixins/blockqoute";
+@import "./assets/scss/mixins/popovers";
+@import "./assets/scss/mixins/tooltips";
+
+/* === Core Styles === */
+
+@import "./assets/scss/background";
+@import "./assets/scss/typography";
+@import "./assets/scss/reset";
+@import "./assets/scss/responsive";
+@import "./assets/scss/misc";
+@import "./assets/scss/utilities";
+@import "./assets/scss/demo";
+@import "./assets/scss/spinner";
+
+/* === Components === */
+
+@import "./assets/scss/components/forms";
+@import "./assets/scss/components/checkbox-radio";
+@import "./assets/scss/components/icons";
+@import "./assets/scss/components/tables";
+@import "./assets/scss/components/accordions";
+@import "./assets/scss/components/buttons";
+@import "./assets/scss/components/breadcrumbs";
+@import "./assets/scss/components/badges";
+@import "./assets/scss/components/cards";
+@import "./assets/scss/components/preview";
+@import "./assets/scss/components/tooltips";
+@import "./assets/scss/components/popovers";
+@import "./assets/scss/components/lists";
+@import "./assets/scss/components/bootstrap-progress";
+@import "./assets/scss/components/bootstrap-alerts";
+@import "./assets/scss/components/tabs";
+@import "./assets/scss/components/dropdowns";
+@import "./assets/scss/components/date-picker";
+@import "./assets/scss/components/pagination";
+@import "./assets/scss/components/portfolio";
+@import "./assets/scss/components/todo-list";
+@import "./assets/scss/components/landing-screens/auth";
+
+/* === Layout === */
+
+@import "./assets/scss/layout";
+.card .card-body {
+    padding: 16px !important;
+}
+
+.badge.badge-no-border {
+    border: none !important;
+}
+
+.p-dropdown-label {
+    margin-top: -12px !important;
+}
+
+.border-buttom {
+    border-bottom: 1px solid #ddd;
+    padding-bottom: 7px;
+}
+
+html,
+body {
+    height: 100%;
+}
+
+body {
+    margin: 0;
+    font-family: Roboto, "Helvetica Neue", sans-serif;
+}
+
+.full-width {
+    width: 100% !important;
+}
+
+.p-button.p-button-icon-only {
+    width: 20px !important;
+    height: 20px !important;
+    ;
+}
+
+.p-fileupload .p-fileupload-content {
+    padding: 0px !important;
+    border: none !important;
+}
+
+.p-fileupload .p-fileupload-buttonbar {
+    background: white !important;
+    padding: 1px !important;
+    border: 1px solid #dee2e6 !important;
+    border-bottom: 1px solid #dee2e6 !important;
+}
+
+.p-tieredmenu {
+    width: 100% !important;
+    border-radius: 0px !important;
+    border: 0px solid #dee2e6 !important;
+}
+
+.p-tieredmenu .p-submenu-list {
+    min-width: 175px !important;
+}
+
+.p-tieredmenu .p-menuitem-icon {
+    margin-left: -3px;
+}
+
+.menu-container {
+    background: #5792ce !important;
+}
+
+p-tieredmenusub.ng-star-inserted ul.p-submenu-list {
+    background: #5792ce !important;
+}
+
+.menu-container .p-menuitem-text {
+    color: #ffffff !important;
+}
+
+.menu-container .p-menuitem-text a:hover {
+    color: #272626 !important;
+}
+
+.p-tieredmenu .p-menuitem-link:not(.p-disabled):hover {
+    background: #71ade9 !important;
+}
+
+.p-tieredmenu .p-menuitem.p-menuitem-active>.p-menuitem-link {
+    background: #71ade9 !important;
+}
+
+.p-tieredmenu .p-menuitem-link .p-menuitem-icon {
+    color: #ffffff !important;
+}
+
+span.p-submenu-icon.pi.pi-angle-right.ng-star-inserted {
+    color: #ffffff !important;
+}
+
+// .h-100.ng-star-inserted {
+//     width: 999px !important;
+// }
+.content-wrapper {
+    padding-bottom: 0px !important;
+}
+
+.table-blue {
+    color: #fff;
+    background-color: #5792ce;
+}
+
+.sub-row {
+    background: #ddd !important;
+    color: black !important;
+}
+
+.all-check {
+    margin-left: 10px;
+}
+
+.custom-bax {
+    margin-top: -30px ​!important;
+}
+
+.filterSection {
+    margin-top: -15px !important;
+}
+
+.main-panel {
+    width: 100% !important;
+    // min-height: calc(100vh - 70px);
+}
+
+.p-calendar .p-datepicker {
+    min-width: 40% !important;
+    width: 300px !important;
+    height: 300px !important;
+}
+
+.p-datepicker table td {
+    padding: 0px !important;
+}
+
+.empTable .p-datatable-scrollable-header-box {
+    min-height: 50vh!important;
+}
+
+.maxWidthOverride {
+    max-width: 100px !important;
+}
+
+ui-dropdown-panel .ui-dropdown-items-wrapper {
+    overflow: auto;
+    min-width: 100px;
+}
+
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-outer-circle {
+    border-color: #34587c !important;
+}
+
+.mat-radio-button.mat-accent .mat-radio-inner-circle,
+.mat-radio-button.mat-accent .mat-radio-ripple .mat-ripple-element:not(.mat-radio-persistent-ripple),
+.mat-radio-button.mat-accent.mat-radio-checked .mat-radio-persistent-ripple,
+.mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
+    background-color: #34587c;
+}

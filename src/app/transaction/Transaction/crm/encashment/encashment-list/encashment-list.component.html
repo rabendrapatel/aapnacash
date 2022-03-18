@@ -1,0 +1,130 @@
+<ngx-spinner name="main-spiner" bdColor="rgba(51,51,51,0.8)" [fullScreen]="true" size="medium" color="#ff9933  " type="ball-pulse">
+    <p style="font-size: 20px; color: rgb(194, 155, 155)">{{loadingText}}</p>
+</ngx-spinner>
+<p-confirmDialog  [baseZIndex]="10000"></p-confirmDialog>
+
+<div class="col-12 grid-margin stretch-card custom-bax">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title text-center border-buttom">Encashment List</h4>
+        </div>
+
+        <div class="container">
+            <section class="filterSection">
+                <form [formGroup]="searchForm">
+                    <div class="dropDownF">
+                        <ul>
+                            <li>
+                                <label>Customer Name</label>
+                                <input formControlName="name" type="text" class="form-control" />
+                            </li>
+
+                            <li>
+                                <label>Mobile No.</label>
+                                <input formControlName="mobileNo" type="text" class="form-control" pKeyFilter="int" />
+                            </li>
+
+                            <li>
+                                <label>Transaction No.</label>
+                                <input formControlName="transactionNo" type="text" class="form-control" />
+                            </li>
+
+                            <li>
+                                <label>Records Per Page</label>
+                                <select formControlName="totalRecord" class="form-control chosen-single">
+                                  <option value="10">10</option>
+                                  <option value="20">20</option>
+                              </select>
+                            </li>
+
+                            <li class="alignTop">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-find" title="Click To Filter" (click)="search()">
+                                    <i class="pi pi-search" style="font-size:0.8rem"></i> Search
+                                </a>
+                            </li>
+                            <li class="alignTop">
+                                <a href="javascript:void(0)" class="btn btn-primary btn-find" title="Click To Filter" (click)="resetSearch()">
+                                    <i class="pi pi-refresh" style="font-size:0.8rem"></i> Reset
+                                </a>
+                            </li>
+                        </ul>
+                    </div>
+                </form>
+            </section>
+
+            <div class="row">
+                <div class="col-sm-12 TotalRecords">Total Records - {{totalRecord}}</div>
+            </div>
+
+            <p-table #dt class="table" [value]="list" [paginator]="false" [style]="{width:'100%'}" dataKey="invoiceNo" (onRowExpand)="getSubPurchaseCurrencyListList($event)"  >
+
+                <ng-template pTemplate="header">
+                    <tr class="WapperTable"> 
+                        <th>S.No</th>
+                        <th>Invoice Number</th>
+                        <th>Payment Mode</th>
+                        <th>Currency</th>
+                        <th>Date</th>
+                        <th style="width:8%">Expand</th>
+                        <th style="width:8%" >Action</th>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="body" let-rowData let-list let-columns let-rowIndex="rowIndex" let-expanded="expanded">
+                    <tr class="WapperTable-Data">
+                        <td>{{paginationIndex+rowIndex}}</td>
+                        <td>{{list.invoiceNo}}</td>
+                        <td>{{list.paymentMode}}</td>
+                        <td>{{list.currencyCode}}</td>
+                        <td>{{list.date | date: 'dd-MM-yyyy'}}</td>
+                        <td>
+                            <button type="button" pButton pRipple [pRowToggler]="list" class="p-button-text p-button-rounded p-button-plain" [icon]="expanded ? 'pi pi-chevron-down' : 'pi pi-chevron-left'"></button>
+                        </td>
+                        <td><a href="javascript:void(0);" (click)="printPdf(rowData)"><i class="pi pi-print ViewIcon"></i></a></td>
+                    </tr>
+                </ng-template>
+
+                <ng-template pTemplate="rowexpansion" let-list>
+                    <tr>
+                      <td colspan="7">
+                        <p-table class="subTable" [value]="subList[list.invoiceNo]" [style]="{width:'100%'}">
+                            <ng-template pTemplate="header">
+                                <tr>
+                                    <th pSortableColumn="id">Invoice No</th>
+                                    <th pSortableColumn="customer">Customer Name</th>
+                                    <th pSortableColumn="date">Currency Type</th>
+                                    <th pSortableColumn="amount">Currency Rate</th>
+                                    <th pSortableColumn="stats">Currency Amount </th>
+                                    <th pSortableColumn="stats">Rs. Amount </th>
+                                    <th style="width:100px">Action</th>
+                                </tr>
+                            </ng-template>
+                            <ng-template pTemplate="body" let-sublist>
+                                <tr>
+                                    <td>{{sublist.invoiceNo}}</td>
+                                    <td>{{sublist.customers.name}}</td>
+                                    <td>{{sublist.currency.code}} - {{sublist.currency.country}}</td>
+                                    <td>{{sublist.currencyRate}}</td>
+                                    <td>{{sublist.currencyAmount}}</td>
+                                    <td>{{sublist.inrAmount}}</td>
+                                    <td>
+                                        <a href="javascript:void(0);" (click)="editData(sublist)"><i class="pi pi-pencil ViewIcon"></i></a>
+                                        &nbsp;&nbsp;
+                                        <a href="javascript:void(0);" (click)="deleteData(sublist)"><i class="pi pi-trash DeleteIcon"></i></a>
+                                    </td>
+                                </tr>
+                            </ng-template>
+                        </p-table>
+                      </td>
+                    </tr>
+                </ng-template>
+
+
+            </p-table>
+
+            <mat-paginator #paginator [length]="totalRecord" [pageSize]="searchForm.value.totalRecord" (page)="onChangePage($event)">
+            </mat-paginator>
+
+        </div>
+    </div>
+</div>

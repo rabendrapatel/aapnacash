@@ -1,0 +1,267 @@
+<ngx-spinner name="main-spiner" bdColor="rgba(51,51,51,0.8)" [fullScreen]="true" size="medium" color="#ff9933  "
+  type="ball-pulse">
+  <p style="font-size: 20px; color: rgb(194, 155, 155)">{{loadingText}}</p>
+</ngx-spinner>
+
+<div class="col-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title text-center border-buttom">User Creation</h4>
+      <form [formGroup]="creationForm">
+        <p-tabView styleClass="tabview-custom" [activeIndex]="activeIndex">
+
+          <p-tabPanel>
+            <ng-template pTemplate="header">
+              <span>Employee</span>
+            </ng-template>
+
+            <div class="row">
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Full Name</label>
+                  <input formControlName="name" type="text" class="form-control form-control-lg">
+
+                  <mat-error
+                    *ngIf="creationForm.controls['name'].invalid && (creationForm.controls['name'].dirty || creationForm.controls['name'].touched)">
+                    Full name required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Mobile No</label>
+                  <input formControlName="mobileNo" type="text" class="form-control form-control-lg" pKeyFilter="int"  maxlength="10">
+
+                  <mat-error
+                    *ngIf="creationForm.controls['mobileNo'].invalid && (creationForm.controls['mobileNo'].dirty || creationForm.controls['mobileNo'].touched)">
+                    Mobile no required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">E-Mail</label>
+                  <input formControlName="email" type="text" class="form-control form-control-lg">
+
+                  <mat-error
+                    *ngIf="creationForm.controls['email'].invalid && (creationForm.controls['email'].dirty || creationForm.controls['email'].touched)">
+                    Email required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">GST number</label>
+                  <input formControlName="gstNumber" type="text" class="form-control form-control-lg">
+
+                  <mat-error
+                    *ngIf="creationForm.controls['gstNumber'].invalid && (creationForm.controls['gstNumber'].dirty || creationForm.controls['gstNumber'].touched)">
+                    GST number required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Member Type</label>
+                  <p-dropdown formControlName="roleId" styleClass="form-control form-control-sm" [options]="roleList"
+                    optionLabel="name" placeholder="Select" [style]="{'width':'100%'}"></p-dropdown>
+
+                  <mat-error
+                    *ngIf="creationForm.controls['roleId'].invalid && (creationForm.controls['roleId'].dirty || creationForm.controls['roleId'].touched)">
+                    Member type required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                    <label class="label">Permission</label>
+                    <p-dropdown formControlName="permission" styleClass="form-control form-control-sm" [options]="permissionList" optionLabel="roleName" placeholder="Select" [style]="{'width':'100%'}" [filter]="true" ></p-dropdown>
+
+                    <mat-error *ngIf="creationForm.controls['permission'].invalid && (creationForm.controls['permission'].dirty || creationForm.controls['permission'].touched)">
+                      Permission required
+                    </mat-error>
+                </div>
+            </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Status</label>
+                  <p-dropdown formControlName="status" styleClass="form-control form-control-sm" [options]="statusList"
+                    optionLabel="name" placeholder="Select" [style]="{'width':'100%'}"></p-dropdown>
+
+                  <mat-error
+                    *ngIf="creationForm.controls['status'].invalid && (creationForm.controls['status'].dirty || creationForm.controls['status'].touched)">
+                    Status required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">User Photos</label>
+                  <p-fileUpload #photos accept="image/*" maxFileSize="1000000" [showCancelButton]=false
+                    [showUploadButton]=false (onSelect)="onPhotoSelect($event,'userPhoto')"></p-fileUpload>
+                </div>
+              </div>
+            </div>
+          </p-tabPanel>
+
+          <p-tabPanel>
+            <ng-template pTemplate="header">
+              <span>Address</span>
+            </ng-template>
+
+            <div [formGroup]="address" *ngFor="let address of addT.controls; let i = index" class="row address-block">
+
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Address Type</label>
+                  <p-dropdown formControlName="addressType" styleClass="form-control form-control-sm"
+                    [options]="addressTypeList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}">
+                  </p-dropdown>
+
+                  <mat-error
+                    *ngIf="address.controls['addressType'].invalid && (address.controls['addressType'].dirty || address.controls['addressType'].touched)">
+                    Address type required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">Country</label>
+                  <p-dropdown formControlName="country" styleClass="form-control form-control-sm"
+                    [options]="countryList" optionLabel="name" placeholder="Select" [filter]="true"
+                    [style]="{'width':'100%'}" (onChange)="getAllStateList($event,i)"></p-dropdown>
+
+                  <mat-error
+                    *ngIf="address.controls['country'].invalid && (address.controls['country'].dirty || address.controls['country'].touched)">
+                    Country required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">State</label>
+                  <p-dropdown formControlName="state" styleClass="form-control form-control-sm" [options]="stateList[i]"
+                    optionLabel="name" placeholder="Select" [filter]="true" [style]="{'width':'100%'}"
+                    (onChange)="getAllCityList($event,i)"></p-dropdown>
+
+                  <mat-error
+                    *ngIf="address.controls['state'].invalid && (address.controls['state'].dirty || address.controls['state'].touched)">
+                    State required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label class="label">City</label>
+                  <p-dropdown formControlName="city" styleClass="form-control form-control-sm" [options]="cityList[i]"
+                    optionLabel="name" placeholder="Select" [filter]="true" [style]="{'width':'100%'}"></p-dropdown>
+
+                  <mat-error
+                    *ngIf="address.controls['city'].invalid && (address.controls['city'].dirty || address.controls['city'].touched)">
+                    City required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Pin code</label>
+                  <input formControlName="pinCode" type="text" class="form-control form-control-lg" pKeyFilter="int"  maxlength="6">
+
+                  <mat-error
+                    *ngIf="address.controls['pinCode'].invalid && (address.controls['pinCode'].dirty || address.controls['pinCode'].touched)">
+                    PinCode required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Address</label>
+                  <textarea formControlName="address" type="text" class="form-control" style="height: 40px;"></textarea>
+
+                  <mat-error
+                    *ngIf="address.controls['address'].invalid && (address.controls['address'].dirty || address.controls['address'].touched)">
+                    Address required
+                  </mat-error>
+                </div>
+
+                <a href="javascript:void(0);" (click)="removeAddressRow(i)" style="float: right;
+                margin-top: -21px;">Remove</a>
+              </div>
+
+            </div>
+            <div class="row form-group"><a href="javascript:void(0);" (click)="addAddressRow(i)">Add More</a></div>
+
+          </p-tabPanel>
+
+          <p-tabPanel>
+            <ng-template pTemplate="header">
+              <span>Documents</span>
+            </ng-template>
+
+            <div [formGroup]="userDoc" class="row address-block" *ngFor="let userDoc of docT.controls; let i = index">
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Document Type</label>
+                  <p-dropdown formControlName="docType" styleClass="form-control form-control-sm"
+                    [options]="docTypeList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}">
+                  </p-dropdown>
+
+                  <mat-error
+                    *ngIf="userDoc.controls['docType'].invalid && (userDoc.controls['docType'].dirty || userDoc.controls['docType'].touched)">
+                    Doc type required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
+                  <label>Document No</label>
+                  <input formControlName="docNumber" type="text" class="form-control form-control-lg">
+
+                  <mat-error
+                    *ngIf="userDoc.controls['docNumber'].invalid && (userDoc.controls['docNumber'].dirty || userDoc.controls['docNumber'].touched)">
+                    Doc number required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-12">
+                <div class="form-group">
+                  <label>Choose</label>
+                  <p-fileUpload #photos accept="image/*" maxFileSize="1000000" [showCancelButton]=false
+                    [showUploadButton]=false (onSelect)="onDocumentSelect($event,i)"></p-fileUpload>
+                  <mat-error
+                    *ngIf="userDoc.controls['fileName'].invalid && (userDoc.controls['fileName'].dirty || userDoc.controls['fileName'].touched)">
+                    Please choose file
+                  </mat-error>
+                </div>
+                <a href="javascript:void(0);" (click)="removeDocRow(i)" style="float: right;
+                margin-top: -21px;">Remove</a>
+              </div>
+            </div>
+
+            <div class="row form-group"><a href="javascript:void(0);" (click)="addDocRow(i)">Add More</a></div>
+          </p-tabPanel>
+
+        </p-tabView>
+      </form>
+      <div class="text-center">
+        <button type="button" (click)="saveEmployee()" class="btn btn-gradient-info btn-rounded btn-fw">Save</button>
+      </div>
+    </div>
+  </div>
+</div>

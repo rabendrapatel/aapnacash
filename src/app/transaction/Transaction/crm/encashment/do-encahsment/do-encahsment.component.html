@@ -1,0 +1,203 @@
+<ngx-spinner name="main-spiner" bdColor="rgba(51,51,51,0.8)" [fullScreen]="true" size="medium" color="#ff9933  "
+  type="ball-pulse">
+  <p style="font-size: 20px; color: rgb(194, 155, 155)">{{loadingText}}</p>
+</ngx-spinner>
+
+<div class="col-12 grid-margin stretch-card">
+  <div class="card">
+    <div class="card-body">
+      <h4 class="card-title text-center border-buttom">Purchase Currency</h4>
+
+      <form [formGroup]="creationForm">
+        <div [formGroup]="encasement" *ngFor="let encasement of encasementT.controls; let i = index"
+          class="address-block">
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="heading">Customer Details</div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Customer Name</label>
+                <input formControlName="customerName" type="text" class="form-control form-control-lg" >
+
+                <mat-error
+                  *ngIf="encasement.controls['customerName'].invalid && (encasement.controls['customerName'].dirty || encasement.controls['customerName'].touched)">
+                  Customer name required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Currency</label>
+                <p-dropdown formControlName="currency" styleClass="form-control form-control-sm"
+                  [options]="currencyList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}" [filter]="true">
+                </p-dropdown>
+
+                <mat-error
+                  *ngIf="encasement.controls['currency'].invalid && (encasement.controls['currency'].dirty || encasement.controls['currency'].touched)">
+                  Currency required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Currency Amount</label>
+                <input formControlName="currencyAmount" type="text" class="form-control form-control-lg"
+                  pKeyFilter="num">
+
+                <mat-error
+                  *ngIf="encasement.controls['currencyAmount'].invalid && (encasement.controls['currencyAmount'].dirty || encasement.controls['currencyAmount'].touched)">
+                  Currency amount required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Currency Rate</label>
+                <input formControlName="currencyRate" type="text" class="form-control form-control-lg" pKeyFilter="num"
+                  maxlength="6">
+
+                <mat-error
+                  *ngIf="encasement.controls['currencyRate'].invalid && (encasement.controls['currencyRate'].dirty || encasement.controls['currencyRate'].touched)">
+                  Currency rate required
+                </mat-error>
+              </div>
+            </div>
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+              <div class="heading">Payment Details</div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Payment Mode</label>
+                <p-dropdown formControlName="paymentMode" styleClass="form-control form-control-sm"
+                  [options]="paymentMoodList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}"
+                  (onChange)="showBankDetails(encasement,i)">
+                </p-dropdown>
+
+                <mat-error
+                  *ngIf="encasement.controls['paymentMode'].invalid && (encasement.controls['paymentMode'].dirty || encasement.controls['paymentMode'].touched)">
+                  Payment mode required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label>Ref Date</label>
+                <input type="text" class="form-control form-control-lg" value="{{currentDate}}" disabled>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row" *ngIf="viewBankDetails[i]">
+
+            <div class="col-sm-6">
+              <div class="form-group">
+                <label class="label">Payment Type</label>
+                <p-dropdown formControlName="paymentType" styleClass="form-control form-control-sm"
+                  [options]="paymentTypeList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}">
+                </p-dropdown>
+
+                <mat-error
+                  *ngIf="encasement.controls['paymentType'].invalid && (encasement.controls['paymentType'].dirty || encasement.controls['paymentType'].touched)">
+                  Payment type required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-6" *ngIf="encasement.value.paymentType.id==1">
+              <div class="form-group">
+                <label class="label">Transaction Type</label>
+                <p-dropdown formControlName="transactionType" styleClass="form-control form-control-sm"
+                  [options]="tranTypeList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}">
+                </p-dropdown>
+
+                <mat-error
+                  *ngIf="encasement.controls['transactionType'].invalid && (encasement.controls['transactionType'].dirty || encasement.controls['transactionType'].touched)">
+                  Transaction type required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Transaction Number</label>
+                <input formControlName="transactionNo" type="text" class="form-control form-control-lg" >
+
+                <mat-error
+                  *ngIf="encasement.controls['transactionNo'].invalid && (encasement.controls['transactionNo'].dirty || encasement.controls['transactionNo'].touched)">
+                  Transaction no required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Bank Name</label>
+                <input formControlName="bankName" type="text" class="form-control form-control-lg" >
+
+                <mat-error
+                  *ngIf="encasement.controls['bankName'].invalid && (encasement.controls['bankName'].dirty || encasement.controls['bankName'].touched)">
+                  Bank name required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Bank Branch Name</label>
+                <input formControlName="branchName" type="text" class="form-control form-control-lg" >
+
+                <mat-error
+                  *ngIf="encasement.controls['branchName'].invalid && (encasement.controls['branchName'].dirty || encasement.controls['branchName'].touched)">
+                  Bank branch name required
+                </mat-error>
+              </div>
+            </div>
+
+            <div class="col-sm-3">
+              <div class="form-group">
+                <label>Address</label>
+                <input formControlName="address" type="text" class="form-control form-control-lg" >
+
+                <mat-error
+                  *ngIf="encasement.controls['address'].invalid && (encasement.controls['address'].dirty || encasement.controls['address'].touched)">
+                  Address required
+                </mat-error>
+              </div>
+            </div>
+
+          </div>
+
+          <div class="row">
+            <div class="col-sm-12">
+            <a href="javascript:void(0);" (click)="removeEncasementRow(i)" style="float: right;">Remove</a>
+            </div>
+          </div>
+        </div>
+
+        <div class="row form-group" style="float: left;margin: 0px;">
+          <a href="javascript:void(0);" (click)="addEncasementRow(i)">Add More</a>
+        </div>
+
+        
+        <div class="text-center">
+          <button type="button" (click)="doEcashment()" class="btn btn-gradient-info btn-rounded btn-fw">
+            <span>Submit</span>
+          </button>
+        </div>
+
+      </form>
+    </div>
+  </div>
+</div>

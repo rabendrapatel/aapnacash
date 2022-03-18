@@ -1,0 +1,50 @@
+<form [formGroup]="creationForm" (ngSubmit)="onSubmit()">
+    <div class="card m-3">
+        <h5 class="card-header">Dynamic Reactive Forms</h5> 
+
+        <div *ngFor="let fields of t.controls; let i = index" class="list-group list-group-flush">
+            <div class="list-group-item">
+                <div [formGroup]="fields" class="form-row">
+
+                    <div class="form-group col-1">
+                      <label>SNo.</label><br>
+                      {{i + 1}}
+                    </div>
+
+                    <div class="form-group col-2">
+                        <label>Name</label>
+                        <input type="text" formControlName="name" class="form-control"/>
+                        <mat-error  *ngIf="fields.controls['name'].invalid && (fields.controls['name'].dirty || fields.controls['name'].touched)" >
+                          Name required
+                       </mat-error>
+                    </div>
+
+                    <div class="form-group col-2">
+                        <label>Email</label>
+                        <input type="text" formControlName="email" class="form-control"/>
+
+                        <mat-error  *ngIf="fields.controls['email'].invalid && (fields.controls['email'].dirty || fields.controls['email'].touched)" >
+                          Email required
+                       </mat-error>
+                    </div>
+
+                    <div class="form-group col-1">
+                      <label>Add</label><br>
+                      <input type="button" value="Add" (click)="addRow(i)" />
+                    </div>
+
+                    <div class="form-group col-1">
+                      <label>Delete</label><br>
+                      <input type="button" value="Delete" (click)="removeRow(i)"/>
+                    </div>
+
+                </div>
+            </div>
+        </div>
+
+        <div class="card-footer text-center">
+            <button class="btn btn-primary mr-1">Save</button>
+        </div>
+
+    </div>
+</form>
