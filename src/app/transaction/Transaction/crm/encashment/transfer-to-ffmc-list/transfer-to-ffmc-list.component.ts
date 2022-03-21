@@ -16,12 +16,12 @@ import { ReqMethod } from 'src/app/shared/function/method';
 import { environment } from 'src/environments/environment';
 
 @Component({
-  selector: 'app-encashment-list',
-  templateUrl: './encashment-list.component.html',
-  styleUrls: ['./encashment-list.component.scss'],
+  selector: 'app-transfer-to-ffmc-list',
+  templateUrl: './transfer-to-ffmc-list.component.html',
+  styleUrls: ['./transfer-to-ffmc-list.component.scss'],
   providers: [DialogService, ConfirmationService]
 })
-export class EncashmentListComponent implements OnInit {
+export class TransferToFfmcListComponent implements OnInit {
 
   @ViewChild(Table) dt: Table;
   @ViewChild('paginator') pg: MatPaginator;
@@ -38,8 +38,8 @@ export class EncashmentListComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public toastr: ToastrService,
     private formBuilder: FormBuilder,
-    private httpService: HttpService,
     private authService: AuthService,
+    private httpService: HttpService,
     private router: Router,
     private dbService: NgxIndexedDBService,
     private confirmationService: ConfirmationService
@@ -47,7 +47,7 @@ export class EncashmentListComponent implements OnInit {
 
   ngOnInit(): void {
     this.initilizeForm();
-    this.getPurchaseCurrencyList(0);
+    this.getTransferToFfmcList(0);
   }
 
   initilizeForm() {
@@ -61,36 +61,36 @@ export class EncashmentListComponent implements OnInit {
 
   search() {
     this.paginationIndex = 1;
-    this.getPurchaseCurrencyList(0);
+    this.getTransferToFfmcList(0);
     this.pg.firstPage();
   }
 
   resetSearch() {
     this.searchForm.reset();
     this.searchForm.controls['totalRecord'].setValue(10);
-    this.getPurchaseCurrencyList(0);
+    this.getTransferToFfmcList(0);
     this.dt.clear();
     this.pg.firstPage();
   }
 
   onChangePage(event) {
-    let offSet = (event.pageIndex * this.searchForm.value.totalRecord);
-    this.paginationIndex = offSet + 1;
-    this.getPurchaseCurrencyList(offSet);
+    let offSet = event.pageIndex;
+    this.paginationIndex = (event.pageIndex * 
+      this.searchForm.value.totalRecord) + 1;
+    this.getTransferToFfmcList(offSet);
   }
 
-  getPurchaseCurrencyList(offsets) {
+  getTransferToFfmcList(offsets) {
+
     this.loadingText = 'Fetching list. Please wait...';
     this.spinner.show('main-spiner');
 
     const searchForm = this.searchForm.value;
     const data = {
-      name: searchForm.name,
-      mobileNo: searchForm.mobileNo,
       transactionNo: searchForm.transactionNo,
     }
 
-    let url = "/api/v1/encashment/get/encashment/invoice/list?size="
+    let url = "/api/v1/ffmc/get/transfer/to/ffmc/list?size="
       + searchForm.totalRecord + "&page=" + offsets;
     this.httpService.callAuthApi(url, data, ReqMethod.POST)
       .subscribe(data => {
@@ -120,7 +120,7 @@ export class EncashmentListComponent implements OnInit {
     let invoiceNo = (event.data)
       ? event.data.invoiceNo : event;
 
-    if (this.subList[invoiceNo] && this.subList[invoiceNo].length>0) {
+    if (this.subList[invoiceNo] && this.subList[invoiceNo].length > 0) {
       return false;
     }
 
@@ -160,7 +160,7 @@ export class EncashmentListComponent implements OnInit {
     this.spinner.show('main-spiner');
 
     this.dbService.clear('currency').subscribe((dKey) => {
-        this.dbService.add('currency', rowData)
+      this.dbService.add('currency', rowData)
         .subscribe((key) => {
           this.spinner.hide('main-spiner');
           this.router.navigate(['transaction/modifyencashment']);
@@ -177,19 +177,19 @@ export class EncashmentListComponent implements OnInit {
       accept: () => {
         this.loadingText = 'Deleting . Please wait...';
         this.spinner.show('main-spiner');
-        let  id = rowData.id ;
-        let invoiceNo = rowData.invoiceNo ;
+        let id = rowData.id;
+        let invoiceNo = rowData.invoiceNo;
 
-        let url = "/api/v1/encashment/delete/encashment?id="+id;
+        let url = "/api/v1/encashment/delete/encashment?id=" + id;
         this.httpService.callAuthApi(url, {}, ReqMethod.GET)
           .subscribe(data => {
             this.spinner.hide('main-spiner');
-            if(data.respCode==Constant.respCode200){
-                this.toastr.success(data.respDescription);
-                this.subList[invoiceNo]=[];
-                this.getSubPurchaseCurrencyListList(invoiceNo);
+            if (data.respCode == Constant.respCode200) {
+              this.toastr.success(data.respDescription);
+              this.subList[invoiceNo] = [];
+              this.getSubPurchaseCurrencyListList(invoiceNo);
             } else {
-                this.toastr.error(data.respDescription);
+              this.toastr.error(data.respDescription);
             }
           }, (err: HttpErrorResponse) => {
             this.spinner.hide('main-spiner');
@@ -198,18 +198,18 @@ export class EncashmentListComponent implements OnInit {
             } else {
               this.toastr.error('Server side error', 'Server error', { timeOut: 3000 });
             }
-        });
+          });
       }
     });
   }
 
-
-  printPdf(rowData:any){
+  printPdf(rowData: any) {
     let invoiceNo = rowData.invoiceNo;
-    var h = 650; var w = 800; 
-    var left = (screen.width/2)-(w/2);
-    var top = (screen.height/2)-(h/2);
-    let url = environment.backEndUrl+"/api/v1/encashment/get/encashment/pdf?invoiceNo="+invoiceNo;
-    return window.open(url, "Pdf Viewer", 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width='+w+', height='+h+', top='+top+', left='+left);
+    var h = 650; var w = 800;
+    var left = (screen.width / 2) - (w / 2);
+    var top = (screen.height / 2) - (h / 2);
+    let url = environment.backEndUrl + "/api/v1/ffmc/get/ffmc/pdf?invoiceNo=" + invoiceNo;
+    return window.open(url, "Pdf Viewer", 'toolbar=no, location=no, directories=no, status=no, menubar=no, scrollbars=no, resizable=no, copyhistory=no, width=' + w + ', height=' + h + ', top=' + top + ', left=' + left);
   }
+
 }

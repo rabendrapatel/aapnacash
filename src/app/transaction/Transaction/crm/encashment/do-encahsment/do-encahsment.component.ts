@@ -3,11 +3,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Constant } from 'src/app/constant/constant';
 import { HttpService } from 'src/app/services/http.service';
-import { SharedService } from 'src/app/services/shared.service';
 import { getKeyValue, getObjKeyVal, validateDynamicFormFields } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
 import { environment } from 'src/environments/environment';
@@ -22,12 +22,14 @@ export class DoEncahsmentComponent implements OnInit {
 
   public creationForm: FormGroup;
   public currentDate  : string;
+  public loadingText: string;
 
   public currencyList: any = [];
   public paymentMoodList: any = [];
   public paymentTypeList: any = [];
   public tranTypeList: any = [];
   public viewBankDetails = {};
+  public rowData = {};
 
   constructor(
     private formBuilder: FormBuilder,
@@ -35,7 +37,7 @@ export class DoEncahsmentComponent implements OnInit {
     public toastr: ToastrService,
     public httpService: HttpService,
     private datePipe: DatePipe,
-    private sharedService: SharedService,
+    private dbService: NgxIndexedDBService,
     private router: Router,
   ) {
     this.currentDate = this.datePipe
@@ -48,6 +50,10 @@ export class DoEncahsmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.initilizeForm();
+    this.dbService.getAll('customer').subscribe((data) => {
+        this.rowData = data[0];
+        this.initilizeForm();
+    });
   }
 
   get encasementF() { return this.creationForm.controls; }
@@ -56,7 +62,7 @@ export class DoEncahsmentComponent implements OnInit {
 
   initilizeForm() {
 
-    let rowwData = this.sharedService.getData("customerData");
+    let obj = this.rowData;
     this.creationForm = this.formBuilder.group({
       encasement: new FormArray([])
     });
@@ -65,8 +71,8 @@ export class DoEncahsmentComponent implements OnInit {
     for (let i = 0; i < 1; i++) {
       this.encasementT.push(this.formBuilder.group({
         id: [0],
-        customerId: [getObjKeyVal(rowwData, 'id', 0),Validators.required],
-        customerName: [{value: getObjKeyVal(rowwData, 'name', ''), disabled: true}],
+        customerId: [getObjKeyVal(obj, 'id', 0),Validators.required],
+        customerName: [{value: getObjKeyVal(obj, 'name', ''), disabled: true}],
 
         currency: ['',Validators.required],
         currencyAmount: ['',Validators.required],
@@ -89,6 +95,9 @@ export class DoEncahsmentComponent implements OnInit {
     if (validateDynamicFormFields(this.creationForm,'encasement')) {
       return;
     }
+
+    this.loadingText = "Saving record. Please wait.";
+    this.spinner.show("main-spiner");
 
     let creationForm = this.creationForm.value;
     creationForm.encasement.forEach((value, index, self) => {
@@ -140,8 +149,6 @@ export class DoEncahsmentComponent implements OnInit {
     let url = "/api/v1/master/get/currency/list";
     this.httpService.callAuthApi(url, {}, ReqMethod.GET)
       .subscribe(data => {
-        console.log(data)
-
         if (data.respCode === Constant.respCode200) {
           let tempList = new Array();
           data.payload.forEach(elm => {
@@ -280,11 +287,10 @@ export class DoEncahsmentComponent implements OnInit {
   }
 
   addEncasementRow(row) {
-    let rowwData = this.sharedService.getData("customerData");
-
+    let obj = this.rowData;
     this.encasementT.push(this.formBuilder.group({
-        customerId: [getObjKeyVal(rowwData, 'id', 0),Validators.required],
-        customerName: [{value: getObjKeyVal(rowwData, 'name', ''), disabled: true}],
+        customerId: [getObjKeyVal(obj, 'id', 0),Validators.required],
+        customerName: [{value: getObjKeyVal(obj, 'name', ''), disabled: true}],
         currency: ['',Validators.required],
         currencyAmount: ['',Validators.required],
         currencyRate: ['',Validators.required],

@@ -1,1 +1,213 @@
-<p>transfer-to-ffmc works!</p>
+<ngx-spinner name="main-spiner" bdColor="rgba(51,51,51,0.8)" [fullScreen]="true" size="medium" color="#ff9933" type="ball-pulse">
+  <p style="font-size: 20px; color: rgb(194, 155, 155)">{{loadingText}}</p>
+</ngx-spinner>
+
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title text-center border-buttom">Generate Bill To FFMC</h4>
+
+            <form [formGroup]="creationForm">
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="heading">Currency Details</div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label class="label">Currency</label>
+                            <p-dropdown formControlName="currency" styleClass="form-control form-control-sm"
+                                [options]="currencyList" optionLabel="name" placeholder="Select"
+                                [style]="{'width':'100%'}" [filter]="true" (onChange)="getCurrencyListById($event)" >
+                            </p-dropdown>
+
+                            <mat-error
+                                *ngIf="creationForm.controls['currency'].invalid && (creationForm.controls['currency'].dirty || creationForm.controls['currency'].touched)">
+                                Currency required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Purchase Currency Rate</label>
+                            <input formControlName="puchasecurrencyRate" type="text" class="form-control form-control-lg" readonly>
+
+                            <mat-error
+                                *ngIf="creationForm.controls['puchasecurrencyRate'].invalid && (creationForm.controls['puchasecurrencyRate'].dirty || creationForm.controls['puchasecurrencyRate'].touched)">
+                                Purchase currency rate required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Available Currecny Amount</label>
+                            <input formControlName="availableCurrencyAmount" type="text" class="form-control form-control-lg" pKeyFilter="num" readonly>
+
+                            <mat-error
+                                *ngIf="creationForm.controls['availableCurrencyAmount'].invalid && (creationForm.controls['availableCurrencyAmount'].dirty || creationForm.controls['availableCurrencyAmount'].touched)">
+                                Available currency amount required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Booking Currecny Amount</label>
+                            <input formControlName="bookingCurrencyAmount" type="text" class="form-control form-control-lg" pKeyFilter="num"  (keyup)="getTotlaInrAmount()">
+
+                            <mat-error *ngIf="creationForm.controls['bookingCurrencyAmount'].invalid && (creationForm.controls['bookingCurrencyAmount'].dirty || creationForm.controls['bookingCurrencyAmount'].touched)">
+                                <div *ngIf="creationForm.controls['bookingCurrencyAmount'].errors.required">
+                                    Booking currecny amount required
+                                </div>
+                                <div *ngIf="creationForm.controls['bookingCurrencyAmount'].errors.lessMatch">
+                                    Booking currecny amount must less than available currency amount
+                                </div>
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Booking Currecny Rate</label>
+                            <input formControlName="bookingCurrencyRate" type="text" class="form-control form-control-lg" pKeyFilter="num"  (keyup)="getTotlaInrAmount()" >
+
+                            <mat-error
+                                *ngIf="creationForm.controls['bookingCurrencyRate'].invalid && (creationForm.controls['bookingCurrencyRate'].dirty || creationForm.controls['bookingCurrencyRate'].touched)">
+                                Booking currency rate required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-4">
+                        <div class="form-group">
+                            <label>Total INR.</label>
+                            <input formControlName="totalInrAmount" type="text" class="form-control form-control-lg" pKeyFilter="num" readonly>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="row">
+                    <div class="col-sm-12">
+                        <div class="heading">Payment Details</div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="label">Payment Mode</label>
+                            <p-dropdown formControlName="paymentMode" styleClass="form-control form-control-sm"
+                                [options]="paymentMoodList" optionLabel="name" placeholder="Select"
+                                [style]="{'width':'100%'}" (onChange)="showBankDetails(creationForm)">
+                            </p-dropdown>
+
+                            <mat-error
+                                *ngIf="creationForm.controls['paymentMode'].invalid && (creationForm.controls['paymentMode'].dirty || creationForm.controls['paymentMode'].touched)">
+                                Payment mode required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label>Ref Date</label>
+                            <input type="text" class="form-control form-control-lg" value="{{currentDate}}" disabled>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="row" *ngIf="viewBankDetails">
+
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="label">Payment Type</label>
+                            <p-dropdown formControlName="paymentType" styleClass="form-control form-control-sm"
+                                [options]="paymentTypeList" optionLabel="name" placeholder="Select"
+                                [style]="{'width':'100%'}">
+                            </p-dropdown>
+
+                            <mat-error
+                                *ngIf="creationForm.controls['paymentType'].invalid && (creationForm.controls['paymentType'].dirty || creationForm.controls['paymentType'].touched)">
+                                Payment type required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-6" *ngIf="creationForm.value.paymentType.id==1">
+                        <div class="form-group">
+                            <label class="label">Transaction Type</label>
+                            <p-dropdown formControlName="transactionType" styleClass="form-control form-control-sm"
+                                [options]="tranTypeList" optionLabel="name" placeholder="Select"
+                                [style]="{'width':'100%'}">
+                            </p-dropdown>
+
+                            <mat-error
+                                *ngIf="creationForm.controls['transactionType'].invalid && (creationForm.controls['transactionType'].dirty || creationForm.controls['transactionType'].touched)">
+                                Transaction type required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Transaction Number</label>
+                            <input formControlName="transactionNo" type="text" class="form-control form-control-lg">
+
+                            <mat-error
+                                *ngIf="creationForm.controls['transactionNo'].invalid && (creationForm.controls['transactionNo'].dirty || creationForm.controls['transactionNo'].touched)">
+                                Transaction no required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Bank Name</label>
+                            <input formControlName="bankName" type="text" class="form-control form-control-lg">
+
+                            <mat-error
+                                *ngIf="creationForm.controls['bankName'].invalid && (creationForm.controls['bankName'].dirty || creationForm.controls['bankName'].touched)">
+                                Bank name required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Bank Branch Name</label>
+                            <input formControlName="branchName" type="text" class="form-control form-control-lg">
+
+                            <mat-error
+                                *ngIf="creationForm.controls['branchName'].invalid && (creationForm.controls['branchName'].dirty || creationForm.controls['branchName'].touched)">
+                                Bank branch name required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                    <div class="col-sm-3">
+                        <div class="form-group">
+                            <label>Address</label>
+                            <input formControlName="address" type="text" class="form-control form-control-lg">
+
+                            <mat-error
+                                *ngIf="creationForm.controls['address'].invalid && (creationForm.controls['address'].dirty || creationForm.controls['address'].touched)">
+                                Address required
+                            </mat-error>
+                        </div>
+                    </div>
+
+                </div>
+
+                <div class="text-center">
+                    <button type="button" (click)="transferToFfmc()" class="btn btn-gradient-info btn-rounded btn-fw">
+                        <span>Submit</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

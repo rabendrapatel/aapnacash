@@ -2,11 +2,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Constant } from 'src/app/constant/constant';
 import { HttpService } from 'src/app/services/http.service';
-import { SharedService } from 'src/app/services/shared.service';
 import { formateDate, getDropdownArray, getDropdownObj, getKeyValue, getObjKeyVal, validateFormFields } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
 import { environment } from 'src/environments/environment';
@@ -41,7 +41,7 @@ export class SearchCustomerComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public toastr: ToastrService,
     public httpService: HttpService,
-    private shared: SharedService,
+    private dbService: NgxIndexedDBService
   ) {
     this.getAllDocTypeList();
     this.getCustomerTypeList();
@@ -56,7 +56,7 @@ export class SearchCustomerComponent implements OnInit {
 
   initilizeForm() {
     this.searchForm = this.formBuilder.group({
-      mobileNo: ['8866557758', Validators.required]
+      mobileNo: ['', Validators.required]
     });
 
     this.createForm = this.formBuilder.group({
@@ -108,45 +108,49 @@ export class SearchCustomerComponent implements OnInit {
           this.isEncasement = true;
           this.showCustomerPage = true;
 
-          let user = data.payload;
-          this.shared.setData(user,"customerData");
+          let customer = data.payload;
+          this.dbService.clear('customer').subscribe((dKey) => {
+              this.dbService.add('customer', customer).subscribe((dKey) => {
+              });
+          });
 
-          this.createForm['controls']["id"].setValue(user.id);
-          this.createForm['controls']["customerName"].setValue(user.name);
-          this.createForm['controls']["mobileNo"].setValue(user.mobile);
-          this.createForm['controls']["email"].setValue(user.email);
-          this.createForm['controls']["email"].setValue(user.email);
-          this.createForm['controls']["documentNo"].setValue(user.documentNo);
-          this.createForm['controls']["arrivalDate"].setValue(user.arrivalDate);
-          this.createForm['controls']["gender"].setValue(user.geneder);
-          this.createForm['controls']["fileName"].setValue(user.docAttachement);
 
-          let customerType = getDropdownObj(user['customerType'], 'id,customerTypeName', 'id,name');
+          this.createForm['controls']["id"].setValue(customer.id);
+          this.createForm['controls']["customerName"].setValue(customer.name);
+          this.createForm['controls']["mobileNo"].setValue(customer.mobile);
+          this.createForm['controls']["email"].setValue(customer.email);
+          this.createForm['controls']["email"].setValue(customer.email);
+          this.createForm['controls']["documentNo"].setValue(customer.documentNo);
+          this.createForm['controls']["arrivalDate"].setValue(customer.arrivalDate);
+          this.createForm['controls']["gender"].setValue(customer.geneder);
+          this.createForm['controls']["fileName"].setValue(customer.docAttachement);
+
+          let customerType = getDropdownObj(customer['customerType'], 'id,customerTypeName', 'id,name');
           this.createForm['controls']["customerType"].setValue(customerType);
 
-          let docType = getDropdownObj(user['docType'], 'id,docName', 'id,name');
+          let docType = getDropdownObj(customer['docType'], 'id,docName', 'id,name');
           this.createForm['controls']["docType"].setValue(docType);
 
-          let profileType = getDropdownObj(user['profileType'], 'id,profileTypeName', 'id,name');
+          let profileType = getDropdownObj(customer['profileType'], 'id,profileTypeName', 'id,name');
           this.createForm['controls']["profileType"].setValue(profileType);
 
-          let addressType = getDropdownObj(user['address']['addressType'], 'id,addressTypeName', 'id,name');
+          let addressType = getDropdownObj(customer['address']['addressType'], 'id,addressTypeName', 'id,name');
           this.createForm['controls']["addressType"].setValue(addressType);
 
-          let country = getDropdownObj(user['address']['country'], 'id,countryName', 'id,name');
+          let country = getDropdownObj(customer['address']['country'], 'id,countryName', 'id,name');
           this.createForm['controls']["country"].setValue(country);
 
-          let state = getDropdownObj(user['address']['state'], 'id,stateName', 'id,name');
+          let state = getDropdownObj(customer['address']['state'], 'id,stateName', 'id,name');
           this.createForm['controls']["state"].setValue(state);
 
-          let city = getDropdownObj(user['address']['city'], 'id,cityName', 'id,name');
+          let city = getDropdownObj(customer['address']['city'], 'id,cityName', 'id,name');
           this.createForm['controls']["city"].setValue(city);
 
-          this.createForm['controls']["address"].setValue(user.address.address);
-          this.createForm['controls']["pinCode"].setValue(user.address.pinCode);
+          this.createForm['controls']["address"].setValue(customer.address.address);
+          this.createForm['controls']["pinCode"].setValue(customer.address.pinCode);
 
-          this.stateList = getDropdownArray(user['address']['country']['states'], 'id,stateName', 'id,name');
-          this.cityList = getDropdownArray(user['address']['state']['citys'], 'id,cityName', 'id,name');
+          this.stateList = getDropdownArray(customer['address']['country']['states'], 'id,stateName', 'id,name');
+          this.cityList = getDropdownArray(customer['address']['state']['citys'], 'id,cityName', 'id,name');
         } else {
           this.toastr.error(data.respDescription);
           this.isEncasement = false;

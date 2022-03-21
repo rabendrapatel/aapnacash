@@ -3,11 +3,11 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
 import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
+import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Constant } from 'src/app/constant/constant';
 import { HttpService } from 'src/app/services/http.service';
-import { SharedService } from 'src/app/services/shared.service';
 import { getDropdownObj, getKeyValue, getObjKeyVal, validateDynamicFormFields } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
 
@@ -25,6 +25,7 @@ export class ModifyEncashmentComponent implements OnInit {
   public paymentMoodList: any = [];
   public paymentTypeList: any = [];
   public tranTypeList: any = [];
+  public rowData = new Object();
   public viewBankDetails = {};
 
   constructor(
@@ -33,7 +34,7 @@ export class ModifyEncashmentComponent implements OnInit {
     public toastr: ToastrService,
     public httpService: HttpService,
     private datePipe: DatePipe,
-    private sharedService: SharedService,
+    private dbService: NgxIndexedDBService,
     private router: Router,
   ) {
     this.currentDate = this.datePipe
@@ -46,6 +47,10 @@ export class ModifyEncashmentComponent implements OnInit {
 
   ngOnInit(): void {
     this.initilizeForm();
+    this.dbService.getAll('currency').subscribe((data) => {
+        this.rowData = data[0];
+        this.initilizeForm();
+    });
   }
 
   get encasementF() { return this.creationForm.controls; }
@@ -54,7 +59,7 @@ export class ModifyEncashmentComponent implements OnInit {
 
   initilizeForm() {
 
-    let rowwData = this.sharedService.getData("currencyData");
+    let rowwData = this.rowData;
     this.creationForm = this.formBuilder.group({
       encasement: new FormArray([])
     });
