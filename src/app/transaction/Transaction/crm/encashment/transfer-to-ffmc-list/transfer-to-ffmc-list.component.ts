@@ -12,6 +12,7 @@ import { Table } from 'primeng/table';
 import { Constant } from 'src/app/constant/constant';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
+import { getKeyValue } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
 import { environment } from 'src/environments/environment';
 
@@ -25,7 +26,8 @@ export class TransferToFfmcListComponent implements OnInit {
 
   @ViewChild(Table) dt: Table;
   @ViewChild('paginator') pg: MatPaginator;
-
+  public getKeyValueFun = getKeyValue;
+  
   public loadingText: string;
   public searchForm: FormGroup;
   public list: any[];

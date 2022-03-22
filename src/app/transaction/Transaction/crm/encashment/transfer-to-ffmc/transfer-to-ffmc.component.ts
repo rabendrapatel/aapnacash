@@ -131,6 +131,7 @@ export class TransferToFfmcComponent implements OnInit {
       paymentMode:getKeyValue(creationForm,'paymentMode','id',0),
       paymentType:getKeyValue(creationForm,'paymentType','id',0),
       transactionType:getKeyValue(creationForm,'transactionType','id',0),
+      transactionNo:getObjKeyVal(creationForm,'transactionNo',0),
     }
 
     let url = "/api/v1/ffmc/transfer/to/ffmc";

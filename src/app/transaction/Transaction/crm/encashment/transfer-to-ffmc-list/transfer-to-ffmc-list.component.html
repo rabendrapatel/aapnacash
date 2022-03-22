@@ -79,9 +79,9 @@
                         <td>{{list.currencyAmount}}</td>
                         <td>{{list.sellCurrencyRate}}</td>
                         <td>{{list.sellInrAmount}}</td>
-                        <td>{{list.paymentMode.paymentModeName}}</td>
-                        <td>{{list.paymentType.paymentTypeName}}</td>
-                        <td>{{list.transactionType.tranTypeName}}</td>
+                        <td>{{list.paymentMode.paymentModeName}} </td>
+                        <td>{{ getKeyValueFun(list,'paymentType','paymentTypeName','')}}</td>
+                        <td>{{ getKeyValueFun(list,'transactionType','tranTypeName','')}}</td>
                         <td>{{list.transactionNo}}</td>
                         <td>{{list.bankName}}</td>
                         <td>{{list.branchName}}</td>
