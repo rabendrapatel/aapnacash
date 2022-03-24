@@ -40,7 +40,7 @@ export class TransferToFfmcListComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public toastr: ToastrService,
     private formBuilder: FormBuilder,
-    private authService: AuthService,
+    public authService: AuthService,
     private httpService: HttpService,
     private router: Router,
     private dbService: NgxIndexedDBService,

@@ -49,4 +49,17 @@ export class AuthService {
     return assignPermission;
   }
 
+
+  checkPermission(permissionId) {
+    let userDetails = this.getUserDetails();
+    let assignPermission = new Array();
+    if(userDetails && userDetails.id){
+      let permission =  userDetails.permission;
+      assignPermission = permission.split(',');
+      
+    }
+    return (assignPermission.indexOf(permissionId) > -1) ? true : false;
+  }
+
+
 }

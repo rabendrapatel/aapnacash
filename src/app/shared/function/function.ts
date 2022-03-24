@@ -21,6 +21,26 @@ export function MustMatch(controlName: string, matchingControlName: string) {
   }
 }
 
+/* Match equal value  of reactive form*/
+export function LessMatch(controlName: string, matchingControlName: string) {
+  return (formGroup: FormGroup) => {
+    const control = formGroup.controls[controlName];
+    const matchingControl = formGroup.controls[matchingControlName];
+
+    if (matchingControl.errors && !matchingControl.errors.mustMatch) {
+      // return if another validator has already found an error on the matchingControl
+      return;
+    }
+
+    // set error on matchingControl if validation fails
+    if (control.value < matchingControl.value) {
+      matchingControl.setErrors({ lessMatch: true });
+    } else {
+      matchingControl.setErrors(null);
+    }
+  }
+}
+
 /* Compare from date must be less than to date*/
 export function FromDateLessToDate(controlName: string, matchingControlName: string) {
   return (formGroup: FormGroup) => {
@@ -112,14 +132,16 @@ export function getKeyDataFromMultidimensionalArray(list, key, removeKey) {
   return existsData;
 }
 
-
+/** GetTime from Date */
 export function getTime(date, formate) {
   let options = { hour12: formate };
   let time = new Date(date).toLocaleTimeString('en-US', options);
   return time;
 }
 
+/** Get Fromated Date */
 export function formateDate(dates) {
+  if(dates==""){ return dates; }
   let date = new Date(dates);
   let mnth = ("0" + (date.getMonth() + 1)).slice(-2);
   let day = ("0" + date.getDate()).slice(-2);
@@ -158,12 +180,12 @@ export function getKeyValue(fomControl: any, key: string, field: string, noValue
 }
 
 export function getObjKeyVal(fomControl: any, key: string, noValue: any) {
-  if (typeof(fomControl[key]) != "undefined" && fomControl[key] !== null) {
+
+  if (typeof(fomControl) != "undefined"  && typeof(fomControl[key]) != "undefined" && fomControl[key] !== null) {
     return fomControl[key];
   }
   return noValue;
 }
-
 
 export function getDropdownObj(fomControl: any, inKey: string, outkey: string) {
 

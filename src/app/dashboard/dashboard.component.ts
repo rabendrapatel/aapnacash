@@ -1,4 +1,11 @@
+import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit } from '@angular/core';
+import { NgxSpinnerService } from 'ngx-spinner';
+import { ToastrService } from 'ngx-toastr';
+import { Constant } from '../constant/constant';
+import { HttpService } from '../services/http.service';
+import { formateDate } from '../shared/function/function';
+import { ReqMethod } from '../shared/function/method';
 
 @Component({
   selector: 'app-dashboard',
@@ -7,162 +14,77 @@ import { Component, OnInit } from '@angular/core';
 })
 export class DashboardComponent implements OnInit {
 
+  public date = new Date();
+  public currecnyList = [];
+  public loadingText: string;
+  public commonData:any = new Object();
+
+  constructor(
+    private httpService: HttpService,
+    public toastr: ToastrService,
+    private spinner: NgxSpinnerService,
+  ) { }
+
+  ngOnInit() {
+      this.getCommonData();
+      this.getAvgCurrencyRate();
+  }
+
   toggleProBanner(event) {
-    console.log("123");
     event.preventDefault();
     document.querySelector('body').classList.toggle('removeProbanner');
   }
 
-  constructor() { }
+  getCommonData() {
 
-  ngOnInit() {
+    let url = "/api/v1/dashboard/get/dashboard/common/data";
+    this.httpService.callAuthApi(url, {}, ReqMethod.GET)
+      .subscribe(data => {
+        this.spinner.hide('main-spiner');
+        if (data.respCode === Constant.respCode200) {
+          this.commonData =data.payload;
+        } else {
+          this.commonData =new Object();
+        }
+      }, (err: HttpErrorResponse) => {
+        this.spinner.hide('main-spiner');
+        this.commonData =new Object();
+        if (err.error instanceof Error) {
+          this.toastr.error('Client side error', 'Client error', { timeOut: 3000 });
+        } else {
+          this.toastr.error('Server side error', 'Server error', { timeOut: 3000 });
+        }
+      });
+
   }
 
-  date: Date = new Date();
 
-  visitSaleChartData = [{
-    label: 'CHN',
-    data: [20, 40, 15, 35, 25, 50, 30, 20],
-    borderWidth: 1,
-    fill: false,
-  },
-  {
-    label: 'USA',
-    data: [40, 30, 20, 10, 50, 15, 35, 40],
-    borderWidth: 1,
-    fill: false,
-  },
-  {
-    label: 'UK',
-    data: [70, 10, 30, 40, 25, 50, 15, 30],
-    borderWidth: 1,
-    fill: false,
-  }];
+  getAvgCurrencyRate() {
 
-  visitSaleChartLabels = ["2013", "2014", "2014", "2015", "2016", "2017"];
+    this.loadingText = 'Fetching record. Please wait...';
+    this.spinner.show('main-spiner');
 
-  visitSaleChartOptions = {
-    responsive: true,
-    legend: false,
-    scales: {
-        yAxes: [{
-            ticks: {
-                display: false,
-                min: 0,
-                stepSize: 20,
-                max: 80
-            },
-            gridLines: {
-              drawBorder: false,
-              color: 'rgba(235,237,242,1)',
-              zeroLineColor: 'rgba(235,237,242,1)'
-            }
-        }],
-        xAxes: [{
-            gridLines: {
-              display:false,
-              drawBorder: false,
-              color: 'rgba(0,0,0,1)',
-              zeroLineColor: 'rgba(235,237,242,1)'
-            },
-            ticks: {
-                padding: 20,
-                fontColor: "#9c9fa6",
-                autoSkip: true,
-            },
-            categoryPercentage: 0.4,
-            barPercentage: 0.4
-        }]
-      }
-  };
+    let fDate = formateDate(this.date);
+    let url = "/api/v1/dashboard/get/dashboard/avg/currency/rate?date="+fDate;
+    this.httpService.callAuthApi(url, {}, ReqMethod.GET)
+      .subscribe(data => {
+        this.spinner.hide('main-spiner');
+        if (data.respCode === Constant.respCode200) {
+          this.currecnyList =data.payload;
+        } else {
+          this.currecnyList = [];
+        }
+      }, (err: HttpErrorResponse) => {
+        this.spinner.hide('main-spiner');
+        this.currecnyList = [];
+        if (err.error instanceof Error) {
+          this.toastr.error('Client side error', 'Client error', { timeOut: 3000 });
+        } else {
+          this.toastr.error('Server side error', 'Server error', { timeOut: 3000 });
+        }
+      });
 
-  visitSaleChartColors = [
-    {
-      backgroundColor: [
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-      ],
-      borderColor: [
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-        'rgba(154, 85, 255, 1)',
-      ]
-    },
-    {
-      backgroundColor: [
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-      ],
-      borderColor: [
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(254, 112, 150, 1)',
-      ]
-    },
-    {
-      backgroundColor: [
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-      ],
-      borderColor: [
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-        'rgba(177, 148, 250, 1)',
-      ]
-    },
-  ];
+  }
 
-  trafficChartData = [
-    {
-      data: [30, 30, 40],
-    }
-  ];
-
-  trafficChartLabels = ["Search Engines", "Direct Click", "Bookmarks Click"];
-
-  trafficChartOptions = {
-    responsive: true,
-    animation: {
-      animateScale: true,
-      animateRotate: true
-    },
-    legend: false,
-  };
-
-  trafficChartColors = [
-    {
-      backgroundColor: [
-        'rgba(177, 148, 250, 1)',
-        'rgba(254, 112, 150, 1)',
-        'rgba(132, 217, 210, 1)'
-      ],
-      borderColor: [
-        'rgba(177, 148, 250, .2)',
-        'rgba(254, 112, 150, .2)',
-        'rgba(132, 217, 210, .2)'
-      ]
-    }
-  ];
 
 }

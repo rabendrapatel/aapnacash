@@ -32,25 +32,34 @@ import { AngularFireModule } from '@angular/fire';
 import { LoginComponent } from './../../src/app/user-pages/login/login.component';
 import { environment } from 'src/environments/environment';
 import { MessagingService } from './services/messaging.service';
-// import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
+import { DBConfig, NgxIndexedDBModule } from 'ngx-indexed-db';
 
 const routes: Routes = [
   { path: '', component: LoginComponent },
   { path: 'login', component: LoginComponent },
 ]
 
-// const dbConfig: DBConfig  = {
-//   name: 'MyDb',
-//   version: 1,
-//   objectStoresMeta: [{
-//     store: 'people',
-//     storeConfig: { keyPath: 'id', autoIncrement: true },
-//     storeSchema: [
-//       { name: 'name', keypath: 'name', options: { unique: false } },
-//       { name: 'email', keypath: 'email', options: { unique: false } }
-//     ]
-//   }]
-// };
+const dbConfig: DBConfig = {
+  name: 'MyDb',
+  version: 10,
+  objectStoresMeta: [{
+    store: 'users',
+    storeConfig: { keyPath: 'id', autoIncrement: true },
+    storeSchema: [
+
+    ]
+  }, {
+    store: 'customer',
+    storeConfig: { keyPath: 'id', autoIncrement: true },
+    storeSchema: [
+    ]
+  }, {
+    store: 'currency',
+    storeConfig: { keyPath: 'id', autoIncrement: true },
+    storeSchema: [
+    ]
+  }]
+};
 
 @NgModule({
   declarations: [
@@ -82,7 +91,7 @@ const routes: Routes = [
     AngularFireAuthModule,
     AngularFireMessagingModule,
     AngularFireModule.initializeApp(environment.firebase),
-    // NgxIndexedDBModule.forRoot(dbConfig)
+    NgxIndexedDBModule.forRoot(dbConfig)
   ],
   providers: [
     LoginComponent,

@@ -2,26 +2,20 @@ import { HttpErrorResponse } from '@angular/common/http';
 import { Component, OnInit, ViewChild } from '@angular/core';
 import { FormBuilder, FormGroup } from '@angular/forms';
 import { MatPaginator } from '@angular/material/paginator';
-import { Router } from '@angular/router';
-import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
-import { DialogService } from 'primeng/dynamicdialog';
 import { Table } from 'primeng/table';
 import { Constant } from 'src/app/constant/constant';
-import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
-import { getKeyValue } from 'src/app/shared/function/function';
+import { formateDate, getKeyValue, getObjKeyVal } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
 
 @Component({
-  selector: 'app-employee-list',
-  templateUrl: './employee-list.component.html',
-  styleUrls: ['./employee-list.component.scss'],
-  providers: [DialogService]
-
+  selector: 'app-stock-report',
+  templateUrl: './stock-report.component.html',
+  styleUrls: ['./stock-report.component.scss']
 })
-export class EmployeeListComponent implements OnInit {
+export class StockReportComponent implements OnInit {
 
   @ViewChild(Table) dt: Table;
   @ViewChild('paginator') pg: MatPaginator;
@@ -29,78 +23,74 @@ export class EmployeeListComponent implements OnInit {
   public loadingText: string;
   public searchForm: FormGroup;
   public list: any[];
-  public roleList: any[];
-
-  public paginationIndex = 1;
+  public currencyList = [];
+  public subList = {};
   public totalRecord = 0;
+  public paginationIndex = 1;
 
   constructor(
-    public dialogService: DialogService,
     private spinner: NgxSpinnerService,
     public toastr: ToastrService,
     private formBuilder: FormBuilder,
     private httpService: HttpService,
-    public authService: AuthService,
-    private router: Router,
-    private dbService: NgxIndexedDBService
   ) { }
 
   ngOnInit(): void {
     this.initilizeForm();
-    this.getAllRoleList();
-    this.getEmployeeList(0);
+    this.getCurrencyList();
+    this.getStockReport(0);
   }
 
   initilizeForm() {
     this.searchForm = this.formBuilder.group({
-      name: [''],
-      mobileNo: [''],
-      roleId: [''],
-      email: [''],
+      fromDate: [''],
+      toDate: [''],
+      currency:[''],
       totalRecord: [10],
     });
   }
 
   search() {
     this.paginationIndex = 1;
-    this.getEmployeeList(0);
+    this.getStockReport(0);
     this.pg.firstPage();
   }
 
   resetSearch() {
     this.searchForm.reset();
     this.searchForm.controls['totalRecord'].setValue(10);
-    this.getEmployeeList(0);
+    this.searchForm.controls['fromDate'].setValue("");
+    this.searchForm.controls['toDate'].setValue("");
+    this.getStockReport(0);
     this.dt.clear();
     this.pg.firstPage();
   }
 
   onChangePage(event) {
-    let offSet = event.pageIndex;
-    this.paginationIndex = (event.pageIndex * 
-    this.searchForm.value.totalRecord) + 1;
-    this.getEmployeeList(offSet);
+    let offSet = (event.pageIndex * 
+      this.searchForm.value.totalRecord);
+    this.paginationIndex = offSet + 1;
+    this.getStockReport(offSet);
   }
 
+  getStockReport(offsets) {
 
-  getEmployeeList(offsets) {
     this.loadingText = 'Fetching list. Please wait...';
     this.spinner.show('main-spiner');
 
     const searchForm = this.searchForm.value;
     const data = {
-      name: searchForm.name,
-      roleId: getKeyValue(searchForm, 'roleId', 'id', 0),
-      mobileNo: searchForm.mobileNo,
-      email: searchForm.email,
+      currency: getKeyValue(searchForm,'currency','id',0),
+      fromDate: formateDate(searchForm.fromDate),
+      toDate: formateDate(searchForm.toDate),
     }
 
-    let url = "/api/v1/user/get/user/list?size="
+    let url = "/api/v1/report/get/stock/report?size="
       + searchForm.totalRecord + "&page=" + offsets;
     this.httpService.callAuthApi(url, data, ReqMethod.POST)
       .subscribe(data => {
         this.spinner.hide('main-spiner');
-
+       
         if (data.respCode === Constant.respCode200) {
           this.list = data.payload.content;
           this.totalRecord = data.payload.totalElements;
@@ -121,9 +111,9 @@ export class EmployeeListComponent implements OnInit {
       });
   }
 
-  getAllRoleList() {
+  getCurrencyList() {
 
-    let url = "/api/v1/master/get/role/list";
+    let url = "/api/v1/master/get/currency/list";
     this.httpService.callAuthApi(url, {}, ReqMethod.GET)
       .subscribe(data => {
         if (data.respCode === Constant.respCode200) {
@@ -131,35 +121,20 @@ export class EmployeeListComponent implements OnInit {
           data.payload.forEach(elm => {
             tempList.push({
               id: elm.id,
-              name: elm.roleName
+              name: elm.code+" - "+ elm.country,
             });
           });
-          this.roleList = tempList;
+          this.currencyList = tempList;
         } else {
-          this.roleList = [];
+          this.currencyList = [];
         }
       }, (err: HttpErrorResponse) => {
-        this.roleList = [];
+        this.currencyList = [];
         if (err.error instanceof Error) {
           this.toastr.error('Client side error', 'Client error', { timeOut: 3000 });
         } else {
           this.toastr.error('Server side error', 'Server error', { timeOut: 3000 });
         }
       });
-
   }
-
-  editData(rowData) {
-    this.loadingText = 'Fetching record. Please wait...';
-    this.spinner.show('main-spiner');
-
-    this.dbService.clear('users').subscribe((dKey) => {
-        this.dbService.add('users', rowData)
-        .subscribe((key) => {
-          this.spinner.hide('main-spiner');
-          this.router.navigate(['transaction/employeemodification']);
-        });
-    });
-  }
-
 }

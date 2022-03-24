@@ -226,3 +226,18 @@ ui-dropdown-panel .ui-dropdown-items-wrapper {
 .mat-radio-button.mat-accent:active .mat-radio-persistent-ripple {
     background-color: #34587c;
 }
+
+.not-allowed {
+    color: #c71426 !important;
+    cursor: not-allowed;
+}
+
+.content-wrapper {
+    padding: 10px!important;
+    padding-left: 0px!important;
+    padding-right: 0px!important;
+}
+
+.containers {
+    padding: 12px !important;
+}

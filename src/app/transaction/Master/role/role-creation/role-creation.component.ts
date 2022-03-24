@@ -4,6 +4,7 @@ import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Constant } from 'src/app/constant/constant';
+import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
 import { getKeyValue, validateFormFields } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
@@ -21,14 +22,20 @@ export class RoleCreationComponent implements OnInit {
 
   public loadingText: string;
   public selectedPermission = [];
+  public assignPermission = [];
   public isNewPermission = 2;
+  public userDetails = new Object();
 
   constructor(
     public formBuilder: FormBuilder,
     private spinner: NgxSpinnerService,
     public toastr: ToastrService,
-    public httpService: HttpService
-  ) { }
+    public httpService: HttpService,
+    public authService: AuthService,
+  ) { 
+    this.userDetails = this.authService.getUserDetails();
+    this.assignPermission = this.authService.getPermission();
+  }
 
   ngOnInit(): void {
     this.initilizeForm();
@@ -48,7 +55,7 @@ export class RoleCreationComponent implements OnInit {
   getMenuList() {
     this.loadingText = 'Loading permission. Please wait...';
     this.spinner.show('main-spiner');
-
+    
     let url = "/api/v1/menu/get/menu/list";
     this.httpService.callApi(url, {}, ReqMethod.GET)
       .subscribe(data => {
@@ -187,6 +194,19 @@ export class RoleCreationComponent implements OnInit {
               this.toastr.error('Server side error', 'Server error', {timeOut: 3000});
           }
       });
+  }
+
+
+  checkIfPermissionIsAssign(permission){
+      /** If Super admin or admin then show all permission enabled */
+      if(this.userDetails['roleId']==1 || this.userDetails['roleId']==2){
+          return true;
+      }
+      /** If Permission assigned to user then show permission */
+      else if(this.assignPermission.includes(permission) ){
+        return true;
+      }
+      return false;
   }
 
 }

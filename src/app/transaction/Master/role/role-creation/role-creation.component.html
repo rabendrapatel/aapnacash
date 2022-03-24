@@ -95,36 +95,36 @@
                                 <th>Print</th>
                             </tr>
 
-                            <tr *ngIf="permission.fld_children_level==0 || permission.fld_children_level==1">
+                            <tr *ngIf="permission.fld_children_level==0 || permission.fld_children_level==1 || permission.fld_name=='Dashboard'">
                                 <td> {{permission.fld_name}}</td>
                                 <td>
                                     <div class="all-check" *ngIf="permission.fld_create">
-                                        <p-checkbox value="{{permission.fld_create}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        <p-checkbox value="{{permission.fld_create}}" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission.fld_create)" ></p-checkbox>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="all-check" *ngIf="permission.fld_view">
-                                        <p-checkbox value="{{permission.fld_view}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        <p-checkbox value="{{permission.fld_view}}" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission.fld_view)"></p-checkbox>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="all-check" *ngIf="permission.fld_modify">
-                                        <p-checkbox value="{{permission.fld_modify}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        <p-checkbox value="{{permission.fld_modify}}" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission.fld_modify)"></p-checkbox>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="all-check" *ngIf="permission.fld_delete">
-                                        <p-checkbox value="{{permission.fld_delete}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        <p-checkbox value="{{permission.fld_delete}}" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission.fld_delete)"></p-checkbox>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="all-check" *ngIf="permission.fld_export">
-                                        <p-checkbox value="{{permission.fld_export}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        <p-checkbox value="{{permission.fld_export}}" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission.fld_export)"></p-checkbox>
                                     </div>
                                 </td>
                                 <td>
                                     <div class="all-check" *ngIf="permission.fld_print">
-                                        <p-checkbox value="{{permission.fld_print}}" [(ngModel)]="selectedPermission"></p-checkbox>
+                                        <p-checkbox value="{{permission.fld_print}}" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission.fld_print)"></p-checkbox>
                                     </div>
                                 </td>
                             </tr>
@@ -137,32 +137,32 @@
                                     </td>
                                     <td>
                                         <div class="all-check" *ngIf="permission1.fld_create">
-                                            <p-checkbox value="{{permission1.fld_create}}" (onChange)="checkedParent(permission.fld_create,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            <p-checkbox value="{{permission1.fld_create}}" (onChange)="checkedParent(permission.fld_create,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission1.fld_create)" ></p-checkbox>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="all-check" *ngIf="permission1.fld_view">
-                                            <p-checkbox value="{{permission1.fld_view}}" (onChange)="checkedParent(permission.fld_view,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            <p-checkbox value="{{permission1.fld_view}}" (onChange)="checkedParent(permission.fld_view,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission1.fld_view)"></p-checkbox>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="all-check" *ngIf="permission1.fld_modify">
-                                            <p-checkbox value="{{permission1.fld_modify}}" (onChange)="checkedParent(permission.fld_modify,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            <p-checkbox value="{{permission1.fld_modify}}" (onChange)="checkedParent(permission.fld_modify,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission1.fld_modify)"></p-checkbox>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="all-check" *ngIf="permission1.fld_delete">
-                                            <p-checkbox value="{{permission1.fld_delete}}" (onChange)="checkedParent(permission.fld_delete,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            <p-checkbox value="{{permission1.fld_delete}}" (onChange)="checkedParent(permission.fld_delete,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission1.fld_delete)"></p-checkbox>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="all-check" *ngIf="permission1.fld_export">
-                                            <p-checkbox value="{{permission1.fld_export}}" (onChange)="checkedParent(permission.fld_export,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            <p-checkbox value="{{permission1.fld_export}}" (onChange)="checkedParent(permission.fld_export,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission1.fld_export)"></p-checkbox>
                                         </div>
                                     </td>
                                     <td>
                                         <div class="all-check" *ngIf="permission1.fld_print">
-                                            <p-checkbox value="{{permission1.fld_print}}" (onChange)="checkedParent(permission.fld_print,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                            <p-checkbox value="{{permission1.fld_print}}" (onChange)="checkedParent(permission.fld_print,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission1.fld_print)"></p-checkbox>
                                         </div>
                                     </td>
                                 </tr>
@@ -174,32 +174,32 @@
                                         </td>
                                         <td class="sub-row">
                                             <div class="all-check" *ngIf="permission2.fld_create">
-                                                <p-checkbox value="{{permission2.fld_create}}" (onChange)="checkedParent1(permission.fld_create,permission1.fld_create,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                                <p-checkbox value="{{permission2.fld_create}}" (onChange)="checkedParent1(permission.fld_create,permission1.fld_create,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission2.fld_create)"></p-checkbox>
                                             </div>
                                         </td>
                                         <td class="sub-row">
                                             <div class="all-check" *ngIf="permission2.fld_view">
-                                                <p-checkbox value="{{permission2.fld_view}}" (onChange)="checkedParent1(permission.fld_view,permission1.fld_view,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                                <p-checkbox value="{{permission2.fld_view}}" (onChange)="checkedParent1(permission.fld_view,permission1.fld_view,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission2.fld_view)"></p-checkbox>
                                             </div>
                                         </td>
                                         <td class="sub-row">
                                             <div class="all-check" *ngIf="permission2.fld_modify">
-                                                <p-checkbox value="{{permission2.fld_modify}}" (onChange)="checkedParent1(permission.fld_modify,permission1.fld_modify,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                                <p-checkbox value="{{permission2.fld_modify}}" (onChange)="checkedParent1(permission.fld_modify,permission1.fld_modify,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission2.fld_modify)"></p-checkbox>
                                             </div>
                                         </td>
                                         <td class="sub-row">
                                             <div class="all-check" *ngIf="permission2.fld_delete">
-                                                <p-checkbox value="{{permission2.fld_delete}}" (onChange)="checkedParent1(permission.fld_delete,permission1.fld_delete,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                                <p-checkbox value="{{permission2.fld_delete}}" (onChange)="checkedParent1(permission.fld_delete,permission1.fld_delete,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission2.fld_delete)"></p-checkbox>
                                             </div>
                                         </td>
                                         <td class="sub-row">
                                             <div class="all-check" *ngIf="permission2.fld_export">
-                                                <p-checkbox value="{{permission2.fld_export}}" (onChange)="checkedParent1(permission.fld_export,permission1.fld_export,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                                <p-checkbox value="{{permission2.fld_export}}" (onChange)="checkedParent1(permission.fld_export,permission1.fld_export,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission2.fld_export)"></p-checkbox>
                                             </div>
                                         </td>
                                         <td class="sub-row">
                                             <div class="all-check" *ngIf="permission2.fld_print">
-                                                <p-checkbox value="{{permission2.fld_print}}" (onChange)="checkedParent1(permission1.fld_print,permission1.fld_print,$event)" [(ngModel)]="selectedPermission"></p-checkbox>
+                                                <p-checkbox value="{{permission2.fld_print}}" (onChange)="checkedParent1(permission1.fld_print,permission1.fld_print,$event)" [(ngModel)]="selectedPermission" *ngIf="checkIfPermissionIsAssign(permission2.fld_print)"></p-checkbox>
                                             </div>
                                         </td>
                                     </tr>

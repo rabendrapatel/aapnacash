@@ -92,6 +92,19 @@
                 </div>
               </div>
 
+              <div class="col-sm-6" *ngIf="userData.roleId==1 || userData.roleId==2" >
+                <div class="form-group">
+                  <label class="label">Parent</label>
+                  <p-dropdown formControlName="createdBy" styleClass="form-control form-control-sm" [options]="parentList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}" [filter]="true" ></p-dropdown>
+
+                  <mat-error
+                    *ngIf="creationForm.controls['createdBy'].invalid && (creationForm.controls['createdBy'].dirty || creationForm.controls['createdBy'].touched)">
+                    Parent required
+                  </mat-error>
+                </div>
+              </div>
+
+              
               <div class="col-sm-6">
                 <div class="form-group">
                   <label class="label">Status</label>
@@ -212,7 +225,7 @@
                 margin-top: -21px;">Remove</a> -->
               </div>
             </div>
-            <div class="row form-group"><a href="javascript:void(0);" (click)="addAddressRow(i)">Add More</a></div>
+            <div class="row form-group"><a href="javascript:void(0);" (click)="addAddressRow(0)">Add More</a></div>
 
           </p-tabPanel>
 
@@ -292,7 +305,7 @@
 
             </div>
 
-            <div class="row form-group"><a href="javascript:void(0);" (click)="addDocRow(i)">Add More</a></div>
+            <div class="row form-group"><a href="javascript:void(0);" (click)="addDocRow(0)">Add More</a></div>
           </p-tabPanel>
 
         </p-tabView>

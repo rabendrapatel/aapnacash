@@ -5,6 +5,7 @@ import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
 import { Constant } from 'src/app/constant/constant';
+import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
 import { getKeyValue, validateDynamicFormFields, validateFormFields } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
@@ -25,6 +26,7 @@ export class EmployeeCreationComponent implements OnInit {
   public statusList: any = [];
   public addressTypeList: any = [];
   public docTypeList: any = [];
+  public parentList: any = [];
 
   public countryList: any = [];
   public stateList: any = {};
@@ -33,6 +35,7 @@ export class EmployeeCreationComponent implements OnInit {
   public permissionList: any=[];
   public uploadedFiles: any = [];
   public activeIndex = 0;
+  public userData:any = new Object();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -40,15 +43,18 @@ export class EmployeeCreationComponent implements OnInit {
     public toastr: ToastrService,
     public httpService: HttpService,
     private router: Router,
+    private authService: AuthService
   ) { }
 
   ngOnInit() {
+    this.getUserData();
     this.initilizeForm();
     this.getAllRoleList();
     this.getAllStatusList();
     this.getAddressTypeList();
     this.getAllCountryList();
     this.getAllDocTypeList();
+    this.getAllUserMasterList();
     this.getPermissionNameList();
   }
 
@@ -68,6 +74,7 @@ export class EmployeeCreationComponent implements OnInit {
       status: [{ id: 1, name: 'ACTIVE' }, Validators.required],
       userPhoto: [''],
       permission: [''],
+      createdBy: [''],
 
       userDoc: new FormArray([]),
       address: new FormArray([])
@@ -320,6 +327,40 @@ export class EmployeeCreationComponent implements OnInit {
 
   }
 
+  getAllUserMasterList() {
+
+    let url = "/api/v1/user/get/user/master/list";
+    this.httpService.callAuthApi(url, {}, ReqMethod.GET)
+      .subscribe(data => {
+        if (data.respCode === Constant.respCode200) {
+          let tempList = new Array();
+          data.payload.forEach(elm => {
+            tempList.push({
+              id: elm.id,
+              name: elm.name +" ("+elm.userName+")"
+            });
+          });
+          this.parentList = tempList;
+        } else {
+          this.parentList = [];
+        }
+      }, (err: HttpErrorResponse) => {
+        this.parentList = [];
+        if (err.error instanceof Error) {
+          this.toastr.error('Client side error', 'Client error', { timeOut: 3000 });
+        } else {
+          this.toastr.error('Server side error', 'Server error', { timeOut: 3000 });
+        }
+      });
+
+  }
+
+  getUserData() {
+    this.userData = this.authService.getUserDetails();
+    this.userData = (this.userData) ? this.userData :
+    { userPhoto: "", name: "", mobile: "" ,email:""};
+  }
+
   addDocRow(row) {
     this.docT.push(this.formBuilder.group({
       docType: ['',Validators.required],
@@ -419,6 +460,7 @@ export class EmployeeCreationComponent implements OnInit {
       gstNumber: creationForm.gstNumber,
       address : creationForm.address,
       userDoc : creationForm.userDoc,
+      createdBy : getKeyValue(creationForm,'createdBy','id',0),
       roleId: getKeyValue(creationForm,'roleId','id',0),
       status: getKeyValue(creationForm,'status','id',0),
       permission:getKeyValue(creationForm,'permission','id',0),

@@ -31,7 +31,8 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label class="label">Mobile No</label>
-                  <input formControlName="mobileNo" type="text" class="form-control form-control-lg" pKeyFilter="int"  maxlength="10">
+                  <input formControlName="mobileNo" type="text" class="form-control form-control-lg" pKeyFilter="int"
+                    maxlength="10">
 
                   <mat-error
                     *ngIf="creationForm.controls['mobileNo'].invalid && (creationForm.controls['mobileNo'].dirty || creationForm.controls['mobileNo'].touched)">
@@ -79,14 +80,29 @@
 
               <div class="col-sm-6">
                 <div class="form-group">
-                    <label class="label">Permission</label>
-                    <p-dropdown formControlName="permission" styleClass="form-control form-control-sm" [options]="permissionList" optionLabel="roleName" placeholder="Select" [style]="{'width':'100%'}" [filter]="true" ></p-dropdown>
+                  <label class="label">Permission</label>
+                  <p-dropdown formControlName="permission" styleClass="form-control form-control-sm"
+                    [options]="permissionList" optionLabel="roleName" placeholder="Select" [style]="{'width':'100%'}"
+                    [filter]="true"></p-dropdown>
 
-                    <mat-error *ngIf="creationForm.controls['permission'].invalid && (creationForm.controls['permission'].dirty || creationForm.controls['permission'].touched)">
-                      Permission required
-                    </mat-error>
+                  <mat-error
+                    *ngIf="creationForm.controls['permission'].invalid && (creationForm.controls['permission'].dirty || creationForm.controls['permission'].touched)">
+                    Permission required
+                  </mat-error>
                 </div>
-            </div>
+              </div>
+
+              <div class="col-sm-6" *ngIf="userData.roleId==1 || userData.roleId==2" >
+                <div class="form-group">
+                  <label class="label">Parent</label>
+                  <p-dropdown formControlName="createdBy" styleClass="form-control form-control-sm" [options]="parentList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}" [filter]="true" ></p-dropdown>
+
+                  <mat-error
+                    *ngIf="creationForm.controls['createdBy'].invalid && (creationForm.controls['createdBy'].dirty || creationForm.controls['createdBy'].touched)">
+                    Parent required
+                  </mat-error>
+                </div>
+              </div>
 
               <div class="col-sm-6">
                 <div class="form-group">
@@ -108,6 +124,9 @@
                     [showUploadButton]=false (onSelect)="onPhotoSelect($event,'userPhoto')"></p-fileUpload>
                 </div>
               </div>
+
+             
+
             </div>
           </p-tabPanel>
 
@@ -177,7 +196,8 @@
               <div class="col-sm-6">
                 <div class="form-group">
                   <label>Pin code</label>
-                  <input formControlName="pinCode" type="text" class="form-control form-control-lg" pKeyFilter="int"  maxlength="6">
+                  <input formControlName="pinCode" type="text" class="form-control form-control-lg" pKeyFilter="int"
+                    maxlength="6">
 
                   <mat-error
                     *ngIf="address.controls['pinCode'].invalid && (address.controls['pinCode'].dirty || address.controls['pinCode'].touched)">
@@ -202,7 +222,7 @@
               </div>
 
             </div>
-            <div class="row form-group"><a href="javascript:void(0);" (click)="addAddressRow(i)">Add More</a></div>
+            <div class="row form-group"><a href="javascript:void(0);" (click)="addAddressRow(0)">Add More</a></div>
 
           </p-tabPanel>
 
@@ -254,7 +274,7 @@
               </div>
             </div>
 
-            <div class="row form-group"><a href="javascript:void(0);" (click)="addDocRow(i)">Add More</a></div>
+            <div class="row form-group"><a href="javascript:void(0);" (click)="addDocRow(0)">Add More</a></div>
           </p-tabPanel>
 
         </p-tabView>

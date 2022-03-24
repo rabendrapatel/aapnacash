@@ -52,6 +52,12 @@ import { TransferToFfmcComponent } from './Transaction/crm/encashment/transfer-t
 import { DoEncahsmentComponent } from './Transaction/crm/encashment/do-encahsment/do-encahsment.component';
 import { EncashmentListComponent } from './Transaction/crm/encashment/encashment-list/encashment-list.component';
 import { ModifyEncashmentComponent } from './Transaction/crm/encashment/modify-encashment/modify-encashment.component';
+import { TransferToFfmcListComponent } from './Transaction/crm/encashment/transfer-to-ffmc-list/transfer-to-ffmc-list.component';
+
+import { GstReportComponent } from './Report/gst-report/gst-report.component';
+import { StockReportComponent } from './Report/stock-report/stock-report.component';
+import { ProfictLossReportComponent } from './Report/profict-loss-report/profict-loss-report.component';
+import { TransferToFfmcComulativeComponent } from './Report/transfer-to-ffmc-comulative/transfer-to-ffmc-comulative.component';
 
 
 const routes: Routes = [
@@ -68,10 +74,18 @@ const routes: Routes = [
 
   { path: 'searchcustomer', component: SearchCustomerComponent },
   { path: 'transfertoffmc', component: TransferToFfmcComponent },
+  { path: 'transfertoffmclist', component: TransferToFfmcListComponent },
 
   { path: 'doencashment', component: DoEncahsmentComponent },
   { path: 'encashmentlist', component: EncashmentListComponent },
   { path: 'modifyencashment', component: ModifyEncashmentComponent },
+
+  /* Report Routing * */
+  { path: 'gstReport', component: GstReportComponent },
+  { path: 'stockReport', component: StockReportComponent },
+  { path: 'profitLossReport', component: ProfictLossReportComponent },
+  { path: 'ffmccomulationReport', component: TransferToFfmcComulativeComponent },
+
 
   /* Transaction Routing * */
   { path: 'dynamicfield', component: DynamicFieldComponent },
@@ -94,6 +108,11 @@ const routes: Routes = [
     DoEncahsmentComponent,
     EncashmentListComponent,
     ModifyEncashmentComponent,
+    TransferToFfmcListComponent,
+    GstReportComponent,
+    StockReportComponent,
+    ProfictLossReportComponent,
+    TransferToFfmcComulativeComponent,
   ],
   imports: [
     CommonModule,

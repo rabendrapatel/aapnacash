@@ -1,11 +1,15 @@
+<ngx-spinner name="main-spiner" bdColor="rgba(51,51,51,0.8)" [fullScreen]="true" size="medium" color="#ff9933  " type="ball-pulse">
+    <p style="font-size: 20px; color: rgb(194, 155, 155)">{{loadingText}}</p>
+</ngx-spinner>
+<div class="containers">
 <div class="row" id="proBanner">
-    <div class="col-12">
+    <!-- <div class="col-12">
         <span class="align-items-center purchase-popup">
       <p>Notification Panel</p>
       <a href="#" target="_blank" class="btn download-button purchase-button btn-purple ml-auto btn-primary Notification-btn">View</a>
       <i class="mdi mdi-close"  (click)="toggleProBanner($event)"  id="bannerClose"></i>
     </span>
-    </div>
+    </div> -->
 </div>
 <div class="page-header">
     <h3 class="page-title">
@@ -27,11 +31,11 @@
         <div class="card bg-gradient-danger card-img-holder text-white">
             <div class="card-body">
                 <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                <h4 class="font-weight-normal mb-3">Active User
+                <h4 class="font-weight-normal mb-3">Today Transaction
                     <i class="mdi mdi-chart-line mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">100</h2>
-                <h6 class="card-text">Increased by 1%</h6>
+                <h2 class="mb-5">{{commonData.todayTransaction}}</h2>
+                <!-- <h6 class="card-text">Increased by 1%</h6> -->
             </div>
         </div>
     </div>
@@ -39,11 +43,11 @@
         <div class="card bg-gradient-info card-img-holder text-white">
             <div class="card-body">
                 <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                <h4 class="font-weight-normal mb-3">Weekly Orders
+                <h4 class="font-weight-normal mb-3">All Transection
                     <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">45,6334</h2>
-                <h6 class="card-text">Decreased by 10%</h6>
+                <h2 class="mb-5">{{commonData.allTransaction}}</h2>
+                <!-- <h6 class="card-text">Decreased by 10%</h6> -->
             </div>
         </div>
     </div>
@@ -51,40 +55,47 @@
         <div class="card bg-gradient-success card-img-holder text-white">
             <div class="card-body">
                 <img src="assets/images/dashboard/circle.svg" class="card-img-absolute" alt="circle-image" />
-                <h4 class="font-weight-normal mb-3">Visitors Online
+                <h4 class="font-weight-normal mb-3">Customer
                     <i class="mdi mdi-diamond mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">95,5741</h2>
-                <h6 class="card-text">Increased by 5%</h6>
+                <h2 class="mb-5">{{commonData.totalCustomer}}</h2>
+                <!-- <h6 class="card-text">Increased by 5%</h6> -->
             </div>
         </div>
     </div>
 </div>
 <div class="row">
-    <div class="col-lg-7 grid-margin stretch-card">
+    <div class="col-lg-12 grid-margin stretch-card">
         <div class="card custom-card">
             <div class="card-body">
                 <div class="d-flex flex-wrap justify-content-between">
-                    <h4 class="card-title">Visit And Sales Statistics</h4>
+                    <h4 class="card-title">Average Currency Rate</h4>
                     <div id="visit-sale-chart-legend" class="rounded-legend legend-horizontal">
                         <ul>
                             <li>
-                                <span class="legend-dots"></span>CHN
+                                <input type="date" id="date" name="date" [(ngModel)]="date">
                             </li>
                             <li>
-                                <span class="legend-dots"></span>USA
-                            </li>
-                            <li class="mr-0">
-                                <span class="legend-dots"></span>UK
+                                <input type="button" value="Go" class="btn btn-success" style="height: 32px;width: 0px;padding-top: 10px;" (click)="getAvgCurrencyRate()" >
                             </li>
                         </ul>
                     </div>
                 </div>
-                <canvas baseChart #visitSaleChart [chartType]="'bar'" [datasets]="visitSaleChartData" [labels]="visitSaleChartLabels" [options]="visitSaleChartOptions" [colors]="visitSaleChartColors"></canvas>
+                <table class="table" *ngIf="currecnyList.length>0">
+                    <tr>
+                        <th>Currency</th>
+                        <th>Rate</th>
+                    </tr>
+                    <tr *ngFor="let list of currecnyList;">
+                        <td>{{list.currencyName}}</td>
+                        <td>{{list.currencyRate}}</td>
+                    </tr>
+                </table>
+                <span *ngIf="currecnyList.length==0">No record found. Please try on other date</span>
             </div>
         </div>
     </div>
-    <div class="col-lg-5 grid-margin stretch-card">
+    <!-- <div class="col-lg-5 grid-margin stretch-card">
         <div class="card custom-card">
             <div class="card-body">
                 <h4 class="card-title">Traffic Sources</h4>
@@ -107,5 +118,6 @@
                 </div>
             </div>
         </div>
-    </div>
+    </div> -->
+</div>
 </div>

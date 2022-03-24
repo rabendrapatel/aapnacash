@@ -27,6 +27,7 @@ export class ModifyEncashmentComponent implements OnInit {
   public tranTypeList: any = [];
   public rowData = new Object();
   public viewBankDetails = {};
+  public loadingText: string;
 
   constructor(
     private formBuilder: FormBuilder,
@@ -121,6 +122,9 @@ export class ModifyEncashmentComponent implements OnInit {
       creationForm.encasement[index]["transactionType"] = getKeyValue(element, 'transactionType', 'id', 0);
     });
     
+    this.loadingText = "Updating record. Please wait.";
+    this.spinner.show("main-spiner");
+
     let url = "/api/v1/encashment/do/encashment";
     this.httpService.callAuthApi(url, creationForm, ReqMethod.POST)
       .subscribe(data => {

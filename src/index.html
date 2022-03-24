@@ -3,7 +3,7 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Sapphire</title>
+    <title>Sapphire Forex Pvt. Ltd.</title>
     <base href="/">
 
     <meta name="viewport" content="width=device-width, initial-scale=1">
@@ -21,4 +21,40 @@
     </app-root>
 </body>
 
+<script>
+  let timer, currSeconds = 0;
+  
+  function resetTimer() {
+
+      /* Clear the previous interval */
+      clearInterval(timer);
+
+      /* Reset the seconds of the timer */
+      currSeconds = 0;
+
+      /* Set a new interval  (run once in 10 min )*/
+      timer =  setInterval(startIdleTimer, 600000);
+  }
+
+  // Define the events that
+  // would reset the timer
+  window.onload = resetTimer;
+  window.onmousemove = resetTimer;
+  window.onmousedown = resetTimer;
+  window.ontouchstart = resetTimer;
+  window.onclick = resetTimer;
+  window.onkeypress = resetTimer;
+
+  function startIdleTimer() {
+        
+      /* Increment the timer seconds */
+      currSeconds++;
+      if(currSeconds>=12){ // Logout in 120 min (12*10)
+          localStorage.removeItem("loginDetails");
+          localStorage.removeItem("isLogin");
+          localStorage.removeItem("userDetails");
+          window.location.href = "#/login";
+      }
+  }
+</script>
 </html>

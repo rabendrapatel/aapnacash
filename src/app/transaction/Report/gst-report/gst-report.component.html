@@ -5,7 +5,8 @@
 <div class="col-12 grid-margin stretch-card custom-bax">
     <div class="card">
         <div class="card-body">
-            <h4 class="card-title text-center border-buttom">Employee List</h4>
+            <h4 class="card-title text-center border-buttom">GST Report
+            </h4>
         </div>
 
         <div class="containers">
@@ -14,18 +15,19 @@
                     <div class="dropDownF">
                         <ul>
                             <li>
-                                <label>Employee Name</label>
-                                <input formControlName="name" type="text" class="form-control" />
+                                <label>Invoice No.</label>
+                                <input formControlName="invoiceNo" type="text" class="form-control" />
+                            </li>
+                            <li>
+                                <label>From Date</label><br>
+                                <p-calendar formControlName="fromDate" dateFormat="yy-dd-mm" inputId="dateformat"
+                                styleClass="date-picker"></p-calendar>
                             </li>
 
                             <li>
-                                <label>Mobile No.</label>
-                                <input formControlName="mobileNo" type="text" class="form-control" pKeyFilter="int" />
-                            </li>
-
-                            <li>
-                                <label>Member Type</label>
-                                <p-dropdown formControlName="roleId" styleClass="form-control form-control-sm" [options]="roleList" optionLabel="name" placeholder="Select" [style]="{'width':'100%'}"></p-dropdown>
+                                <label>To Date</label><br>
+                                <p-calendar formControlName="toDate" dateFormat="yy-dd-mm" inputId="dateformat"
+                                styleClass="date-picker"></p-calendar>
                             </li>
 
                             <li>
@@ -58,45 +60,24 @@
             <p-table #dt class="table" [value]="list" [paginator]="false" [style]="{width:'100%'}">
 
                 <ng-template pTemplate="header">
-                    <tr class="WapperTable">
-                        <th>S.No</th>
-                        <th>User Code</th>
-                        <th>User Name</th>
-                        <th>Full Name</th>
-                        <th>Mobile No</th>
-                        <th>E-Mail</th>
-                        <th>Member Type</th>
-                        <th style="width:100px;" >Status</th>
-                        <th>View</th>
+                    <tr class="WapperTable"> 
+                        <th style="width: 100px;">S.No</th>
+                        <th > Invoice Number</th>
+                        <th > Total Amount </th>
+                        <th > Refund Amount </th>
+                        <th > GST Amount </th>
+                        <th style="width: 110px;"> Date </th>
                     </tr>
                 </ng-template>
-                <ng-template pTemplate="body" let-rowData let-list let-columns let-rowIndex="rowIndex">
+
+                <ng-template pTemplate="body" let-rowData let-list let-columns let-rowIndex="rowIndex" let-expanded="expanded">
                     <tr class="WapperTable-Data">
                         <td>{{paginationIndex+rowIndex}}</td>
-                        <td>{{list.userCode}}</td>
-                        <td>{{list.userName}}</td>
-                        <td>{{list.name}}</td>
-                        <td>{{list.mobile}}</td>
-                        <td>{{list.email}}</td>
-                        <td>{{list.roleId.roleName}}</td>
-                        <td>
-                            <span *ngIf="list.status == 1" class="badge badge-success">
-                                Active
-                            </span>
-                            <span *ngIf="list.status != 1" class="badge badge-danger">
-                                Inactive
-                            </span>
-
-                        </td>
-                        <td>
-                            <a *ngIf="authService.checkPermission('userListM')" href="javascript:void(0);" (click)="editData(rowData)"><i class="pi pi-eye ViewIcon"></i>
-                            </a>
-
-                            <a *ngIf="!authService.checkPermission('userListM')" title="Not allowded">
-                                <i class="pi pi-eye ViewIcon not-allowed"></i>
-                            </a>
-
-                        </td>
+                        <td>{{list.invoiceNo}}</td>
+                        <td>{{list.totalInrAmount}}</td>
+                        <td>{{list.totalRefundableAmount}}</td>
+                        <td>{{list.totalGstAmount | number:'1.2-2' }}</td>
+                        <td>{{list.createdAt | date: 'dd-MM-yyyy'}}</td>
                     </tr>
                 </ng-template>
             </p-table>

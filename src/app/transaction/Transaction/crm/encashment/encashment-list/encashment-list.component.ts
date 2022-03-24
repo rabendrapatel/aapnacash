@@ -39,7 +39,7 @@ export class EncashmentListComponent implements OnInit {
     public toastr: ToastrService,
     private formBuilder: FormBuilder,
     private httpService: HttpService,
-    private authService: AuthService,
+    public authService: AuthService,
     private router: Router,
     private dbService: NgxIndexedDBService,
     private confirmationService: ConfirmationService
