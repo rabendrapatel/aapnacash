@@ -4,16 +4,19 @@ import { FormArray, FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { Router } from '@angular/router';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Constant } from 'src/app/constant/constant';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
-import { getKeyValue, validateDynamicFormFields, validateFormFields } from 'src/app/shared/function/function';
+import { getKeyValue, getObjKeyVal, validateDynamicFormFields, validateFormFields } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
+import { CityCreationComponent } from '../../city/city-creation/city-creation.component';
 
 @Component({
   selector: 'app-employee-creation',
   templateUrl: './employee-creation.component.html',
   styleUrls: ['./employee-creation.component.scss'],
+  providers: [DialogService]
 })
 export class EmployeeCreationComponent implements OnInit {
 
@@ -43,7 +46,8 @@ export class EmployeeCreationComponent implements OnInit {
     public toastr: ToastrService,
     public httpService: HttpService,
     private router: Router,
-    private authService: AuthService
+    private authService: AuthService,
+    public dialogService: DialogService
   ) { }
 
   ngOnInit() {
@@ -56,6 +60,7 @@ export class EmployeeCreationComponent implements OnInit {
     this.getAllDocTypeList();
     this.getAllUserMasterList();
     this.getPermissionNameList();
+    this.getAllStateList(101,0);
   }
 
   get docF() { return this.creationForm.controls; }
@@ -70,6 +75,7 @@ export class EmployeeCreationComponent implements OnInit {
       mobileNo: ['', Validators.required],
       email: [''],
       gstNumber: ['', Validators.required],
+      firmName: [''],
       roleId: ['', Validators.required],
       status: [{ id: 1, name: 'ACTIVE' }, Validators.required],
       userPhoto: [''],
@@ -92,7 +98,7 @@ export class EmployeeCreationComponent implements OnInit {
     for (let i = 0; i < 1; i++) {
       this.addT.push(this.formBuilder.group({
         addressType: ['',Validators.required],
-        country: ['',Validators.required],
+        country: [{id: 101, name: 'India'},Validators.required],
         state: ['',Validators.required],
         city: ['',Validators.required],
         address: ['',Validators.required],
@@ -214,9 +220,8 @@ export class EmployeeCreationComponent implements OnInit {
 
   getAllStateList(event,row){
 
-    console.log(event);
 
-    let countryId = (event.value) ? event.value.id : 0;
+    let countryId = (event.value) ? event.value.id : event;
 
     let url = "/api/v1/master/get/state/list?id="+countryId;
     this.httpService.callAuthApi(url, {}, ReqMethod.GET)
@@ -251,7 +256,7 @@ export class EmployeeCreationComponent implements OnInit {
   }
 
   getAllCityList(event,row){
-    let stateId = (event.value) ? event.value.id : 0;
+    let stateId = (event.value) ? event.value.id : event;
 
     let url = "/api/v1/master/get/city/list?id="+stateId;
     this.httpService.callAuthApi(url, {}, ReqMethod.GET)
@@ -458,6 +463,7 @@ export class EmployeeCreationComponent implements OnInit {
       mobileNo: creationForm.mobileNo,
       email: creationForm.email,
       gstNumber: creationForm.gstNumber,
+      firmName: creationForm.firmName,
       address : creationForm.address,
       userDoc : creationForm.userDoc,
       createdBy : getKeyValue(creationForm,'createdBy','id',0),
@@ -485,6 +491,28 @@ export class EmployeeCreationComponent implements OnInit {
               this.toastr.error('Server side error', 'Server error', {timeOut: 3000});
           }
       });
+  }
+
+  addNewCity(row){
+    let createForm = this.creationForm.value;
+    const address = createForm.address[row];
+    
+    let data = {
+      stateId:getObjKeyVal(address['state'],'id',0),
+      stateName:getObjKeyVal(address['state'],'name','')
+    }
+
+    const ref = this.dialogService.open(CityCreationComponent, {
+      data: data,
+      header: '',
+      width: '50%'
+    });
+
+    ref.onClose.subscribe((data: any) => {
+      if(data){
+        this.getAllCityList(getObjKeyVal(data,'stateId',0),row);
+      }
+    });
   }
 
 }

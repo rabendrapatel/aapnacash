@@ -16,8 +16,8 @@
                     <div class="dropDownF">
                         <ul>
                             <li>
-                                <label>Transaction No.</label>
-                                <input formControlName="transactionNo" type="text" class="form-control" />
+                                <label>Invoice No.</label>
+                                <input formControlName="invoiceNo" type="text" class="form-control" />
                             </li>
 
                             <li>
@@ -53,16 +53,17 @@
                     <tr class="WapperTable"> 
                         <th>S.No</th>
                         <th>Invoice No</th>
+                        <th style="width:150px">Transfer By</th>
                         <th >Customer Currency Name</th>
                         <th >Customer Currency Amount</th>
                         <th >Currency Rate</th>
                         <th >Rs. Amount </th>
-                        <th >Payment Mode </th>
+                        <!-- <th >Payment Mode </th>
                         <th >Payment Type </th>
                         <th >Transaction Type </th>
                         <th >Transaction Id </th>
                         <th >Bank Name </th>
-                        <th >Bank Branch </th>
+                        <th >Bank Branch </th> -->
                         <th style="width:105px">Date </th>
                         <th style="width:70px">Action</th>
                     </tr>
@@ -72,6 +73,7 @@
                     <tr class="WapperTable-Data">
                         <td>{{paginationIndex+rowIndex}}</td>
                         <td>{{list.invoiceNo}}</td>
+                        <td>{{ getKeyValueFun(list,'user','name','')}} <br><br> ({{ getKeyValueFun(list,'user','userCode','')}})</td>
                         <td>
                             {{list.currency.code}} - 
                             {{list.currency.country}}
@@ -79,12 +81,12 @@
                         <td>{{list.currencyAmount}}</td>
                         <td>{{list.sellCurrencyRate}}</td>
                         <td>{{list.sellInrAmount}}</td>
-                        <td>{{list.paymentMode.paymentModeName}} </td>
+                        <!-- <td>{{list.paymentMode.paymentModeName}} </td>
                         <td>{{ getKeyValueFun(list,'paymentType','paymentTypeName','')}}</td>
                         <td>{{ getKeyValueFun(list,'transactionType','tranTypeName','')}}</td>
                         <td>{{list.transactionNo}}</td>
                         <td>{{list.bankName}}</td>
-                        <td>{{list.branchName}}</td>
+                        <td>{{list.branchName}}</td> -->
                         <td>{{list.createdAt | date: 'dd-MM-yyyy'}}</td>
 
                         <td >

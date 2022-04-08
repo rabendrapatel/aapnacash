@@ -1,7 +1,11 @@
 <nav class="navbar default-layout-navbar col-lg-12 col-12 p-0 fixed-top d-flex flex-row nav-bar">
     <div class="text-center navbar-brand-wrapper d-flex align-items-center justify-content-center nav-bar">
-        <a class="navbar-brand brand-logo" routerLink="/dashboard"><img src="assets/images/SITA_Logo_New.png" alt="logo" /></a>
-        <a class="navbar-brand brand-logo-mini" routerLink="/dashboard"><img src="assets/images/logo-mini.svg" alt="logo" /></a>
+        <a class="navbar-brand brand-logo" routerLink="/dashboard">
+          <span style="font-family: fantasy;" >Sapphire Forex Pvt. Ltd</span>
+        </a>
+        <a class="navbar-brand brand-logo-mini" routerLink="/dashboard">
+          <!-- <img src="assets/images/logo-mini.svg" alt="logo" /> -->
+        </a>
     </div>
     <div class="navbar-menu-wrapper d-flex align-items-stretch">
         <button class="navbar-toggler navbar-toggler align-self-center" type="button" data-toggle="minimize" (click)="toggleSidebar()">
@@ -126,7 +130,7 @@
                 <a class="nav-link dropdown-toggle" id="profileDropdown" ngbDropdownToggle>
 
                     <div class="nav-profile-img">
-                        <img src="{{documentUrl}}{{userData.userPhoto}}" alt="image" onerror="this.src='../../../assets/images/no_images.png';">
+                        <img src="{{documentUrl}}{{userData.userPhoto}}" alt="image" onerror="this.src='assets/images/no_images.png'">
                         <span class="availability-status online"></span>
                     </div>
 

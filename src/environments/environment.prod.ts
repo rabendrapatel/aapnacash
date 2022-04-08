@@ -1,7 +1,7 @@
 export const environment = {
   production: true,
   backEndUrl : "http://103.87.175.98:3000",
-  documentUrl: "http://103.87.175.98:3000/api/master/common/download?filename=",
+  documentUrl : "http://103.87.175.98:3000/api/v1/utill/file/download?file=",
 
   firebase : {
     apiKey: "AIzaSyBTLzKjK3rFYVzk1JBQqTtt7Tf5SN7ZTVQ",

@@ -1,0 +1,39 @@
+<ngx-spinner name="main-spiner" bdColor="rgba(51,51,51,0.8)" [fullScreen]="true" size="medium" color="#ff9933  "
+    type="ball-pulse">
+    <p style="font-size: 20px; color: rgb(194, 155, 155)">{{loadingText}}</p>
+</ngx-spinner>
+
+<div class="col-12 grid-margin stretch-card">
+    <div class="card">
+        <div class="card-body">
+            <h4 class="card-title text-center border-buttom">City Creation</h4>
+            <form [formGroup]="createForm">
+                <div class="row">
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="label">State Name</label>
+                            <input type="text" class="form-control" formControlName="stateName" readonly />
+                        </div>
+                    </div>
+                    <div class="col-sm-6">
+                        <div class="form-group">
+                            <label class="label">City Name</label>
+                            <input type="text" class="form-control" formControlName="cityName" />
+                            <mat-error
+                                *ngIf="createForm.controls['cityName'].invalid && (createForm.controls['cityName'].dirty || createForm.controls['cityName'].touched)">
+                                City name required
+                            </mat-error>
+                        </div>
+                    </div>
+                </div>
+
+                <div class="text-center">
+                    <button type="button" (click)="saveNewCity()" class="btn btn-gradient-info btn-rounded btn-fw">
+                        <span>Save</span>
+                    </button>
+                </div>
+
+            </form>
+        </div>
+    </div>
+</div>

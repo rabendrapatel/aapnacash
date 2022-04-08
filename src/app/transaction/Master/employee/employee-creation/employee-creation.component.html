@@ -55,6 +55,18 @@
 
               <div class="col-sm-6">
                 <div class="form-group">
+                  <label class="label">Firm Name</label>
+                  <input formControlName="firmName" type="text" class="form-control form-control-lg">
+
+                  <mat-error
+                    *ngIf="creationForm.controls['firmName'].invalid && (creationForm.controls['firmName'].dirty || creationForm.controls['firmName'].touched)">
+                    Firm name required
+                  </mat-error>
+                </div>
+              </div>
+
+              <div class="col-sm-6">
+                <div class="form-group">
                   <label class="label">GST number</label>
                   <input formControlName="gstNumber" type="text" class="form-control form-control-lg">
 
@@ -185,6 +197,8 @@
                   <label class="label">City</label>
                   <p-dropdown formControlName="city" styleClass="form-control form-control-sm" [options]="cityList[i]"
                     optionLabel="name" placeholder="Select" [filter]="true" [style]="{'width':'100%'}"></p-dropdown>
+                  
+                  <a class="add-city" href="javascript:void(0)" (click)="addNewCity(i)" *ngIf="address.value.state.id" >Add City</a>
 
                   <mat-error
                     *ngIf="address.controls['city'].invalid && (address.controls['city'].dirty || address.controls['city'].touched)">

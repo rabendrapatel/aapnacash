@@ -58,6 +58,9 @@ import { GstReportComponent } from './Report/gst-report/gst-report.component';
 import { StockReportComponent } from './Report/stock-report/stock-report.component';
 import { ProfictLossReportComponent } from './Report/profict-loss-report/profict-loss-report.component';
 import { TransferToFfmcComulativeComponent } from './Report/transfer-to-ffmc-comulative/transfer-to-ffmc-comulative.component';
+import { CityCreationComponent } from './Master/city/city-creation/city-creation.component';
+import { CityListComponent } from './Master/city/city-list/city-list.component';
+import { CityModificationComponent } from './Master/city/city-modification/city-modification.component';
 
 
 const routes: Routes = [
@@ -113,6 +116,9 @@ const routes: Routes = [
     StockReportComponent,
     ProfictLossReportComponent,
     TransferToFfmcComulativeComponent,
+    CityCreationComponent,
+    CityListComponent,
+    CityModificationComponent,
   ],
   imports: [
     CommonModule,

@@ -11,11 +11,11 @@
         <div class="row">
           <div class="col-sm-3">
             <div class="form-group">
-              <label class="label">Mobile Number</label>
-              <input type="text" class="form-control" formControlName="mobileNo" (keyup)="searchCustomer()" pKeyFilter="int" maxlength="10" />
+              <label class="label">Customer ID</label>
+              <input type="text" class="form-control" formControlName="mobileNo"  oninput="this.value = this.value.toUpperCase()" />
 
               <mat-error *ngIf="searchForm.controls['mobileNo'].invalid && (searchForm.controls['mobileNo'].dirty || searchForm.controls['mobileNo'].touched)">
-                Mobile number required
+                Customer id required
               </mat-error>
             </div>
           </div>
@@ -52,15 +52,16 @@
                 </mat-error>
               </div>
             </div>
+            
 
             <div class="col-sm-6">
               <div class="form-group">
-                <label class="label">Mobile Number</label>
-                <input type="text" class="form-control" formControlName="mobileNo" pKeyFilter="int" maxlength="10" />
+                <label class="label">Customer ID</label>
+                <input type="text" class="form-control" formControlName="mobileNo" readonly />
 
                 <mat-error
                   *ngIf="createForm.controls['mobileNo'].invalid && (createForm.controls['mobileNo'].dirty || createForm.controls['mobileNo'].touched)">
-                  Mobile number required
+                  Customer id required
                 </mat-error>
               </div>
             </div>
@@ -150,7 +151,7 @@
             <div class="col-sm-6">
               <div class="form-group">
                 <label class="label">Arrival Date</label>
-                <p-calendar formControlName="arrivalDate" dateFormat="yy-dd-mm" inputId="dateformat"
+                <p-calendar formControlName="arrivalDate" dateFormat="dd-mm-yy" inputId="dateformat"
                   styleClass="date-picker"></p-calendar>
 
                 <mat-error
@@ -221,11 +222,12 @@
               <div class="form-group">
                 <label class="label">City</label>
                 <p-dropdown formControlName="city" styleClass="form-control form-control-sm" [options]="cityList" optionLabel="name" placeholder="Select" [filter]="true" [style]="{'width':'100%'}"></p-dropdown>
-
+                <a class="add-city" href="javascript:void(0)" (click)="addNewCity()" *ngIf="isNewCity" >Add City</a>
                 <mat-error *ngIf="createForm.controls['city'].invalid && (createForm.controls['city'].dirty || createForm.controls['city'].touched)">
                   City required
                 </mat-error>
               </div>
+              
             </div>
 
             <div class="col-sm-6">

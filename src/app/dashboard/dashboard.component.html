@@ -34,7 +34,7 @@
                 <h4 class="font-weight-normal mb-3">Today Transaction
                     <i class="mdi mdi-chart-line mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">{{commonData.todayTransaction}}</h2>
+                <h2 class="mb-5">{{commonData.todayTransaction | number: '1.1-1'}}</h2>
                 <!-- <h6 class="card-text">Increased by 1%</h6> -->
             </div>
         </div>
@@ -46,7 +46,7 @@
                 <h4 class="font-weight-normal mb-3">All Transection
                     <i class="mdi mdi-bookmark-outline mdi-24px float-right"></i>
                 </h4>
-                <h2 class="mb-5">{{commonData.allTransaction}}</h2>
+                <h2 class="mb-5">{{commonData.allTransaction | number: '1.1-1'}}</h2>
                 <!-- <h6 class="card-text">Decreased by 10%</h6> -->
             </div>
         </div>
@@ -88,7 +88,7 @@
                     </tr>
                     <tr *ngFor="let list of currecnyList;">
                         <td>{{list.currencyName}}</td>
-                        <td>{{list.currencyRate}}</td>
+                        <td>{{list.currencyRate  | number: '1.1-1'}}</td>
                     </tr>
                 </table>
                 <span *ngIf="currecnyList.length==0">No record found. Please try on other date</span>

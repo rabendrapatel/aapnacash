@@ -5,17 +5,20 @@ import { Router } from '@angular/router';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Constant } from 'src/app/constant/constant';
 import { AuthService } from 'src/app/services/auth.service';
 import { HttpService } from 'src/app/services/http.service';
 import { getDropdownArray, getDropdownObj, getKeyValue, getObjKeyVal, validateDynamicFormFields, validateFormFields } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
 import { environment } from 'src/environments/environment';
+import { CityCreationComponent } from '../../city/city-creation/city-creation.component';
 
 @Component({
   selector: 'app-employee-modification',
   templateUrl: './employee-modification.component.html',
-  styleUrls: ['./employee-modification.component.scss']
+  styleUrls: ['./employee-modification.component.scss'],
+  providers: [DialogService]
 })
 export class EmployeeModificationComponent implements OnInit {
 
@@ -50,7 +53,8 @@ export class EmployeeModificationComponent implements OnInit {
     public httpService: HttpService,
     private router: Router,
     private authService: AuthService,
-    private dbService: NgxIndexedDBService
+    private dbService: NgxIndexedDBService,
+    public dialogService: DialogService
   ) {
     this.getUserData();
     this.getAllRoleList();
@@ -84,6 +88,7 @@ export class EmployeeModificationComponent implements OnInit {
       mobileNo: [getObjKeyVal(obj, 'mobile', ''), Validators.required],
       email: [getObjKeyVal(obj, 'email', '')],
       gstNumber: [getObjKeyVal(obj, 'gstNumber', ''), Validators.required],
+      firmName: [getObjKeyVal(obj, 'firmName', '')],
       roleId: [getDropdownObj(obj['roleId'], 'id,roleName', 'id,name'), Validators.required],
       status: [getDropdownObj(obj['active'], 'id,statusName', 'id,name'), Validators.required],
       userPhoto: [getObjKeyVal(obj, 'userPhoto', '')],
@@ -274,7 +279,7 @@ export class EmployeeModificationComponent implements OnInit {
   }
 
   getAllCityList(event, row) {
-    let stateId = (event.value) ? event.value.id : 0;
+    let stateId = (event.value) ? event.value.id : event;
 
     let url = "/api/v1/master/get/city/list?id=" + stateId;
     this.httpService.callAuthApi(url, {}, ReqMethod.GET)
@@ -574,6 +579,7 @@ export class EmployeeModificationComponent implements OnInit {
       mobileNo: creationForm.mobileNo,
       email: creationForm.email,
       gstNumber: creationForm.gstNumber,
+      firmName: creationForm.firmName,
       address: creationForm.address,
       userDoc: creationForm.userDoc,
       userId: getObjKeyVal(this.rowData, "id", 0),
@@ -603,6 +609,28 @@ export class EmployeeModificationComponent implements OnInit {
           this.toastr.error('Server side error', 'Server error', { timeOut: 3000 });
         }
       });
+  }
+
+  addNewCity(row){
+    let createForm = this.creationForm.value;
+    const address = createForm.address[row];
+    
+    let data = {
+      stateId:getObjKeyVal(address['state'],'id',0),
+      stateName:getObjKeyVal(address['state'],'name','')
+    }
+
+    const ref = this.dialogService.open(CityCreationComponent, {
+      data: data,
+      header: '',
+      width: '50%'
+    });
+
+    ref.onClose.subscribe((data: any) => {
+      if(data){
+        this.getAllCityList(getObjKeyVal(data,'stateId',0),row);
+      }
+    });
   }
 
 }

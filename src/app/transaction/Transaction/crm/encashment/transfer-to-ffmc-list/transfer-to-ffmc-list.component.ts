@@ -56,7 +56,7 @@ export class TransferToFfmcListComponent implements OnInit {
     this.searchForm = this.formBuilder.group({
       name: [''],
       mobileNo: [''],
-      transactionNo: [''],
+      invoiceNo: [''],
       totalRecord: [10],
     });
   }
@@ -89,7 +89,7 @@ export class TransferToFfmcListComponent implements OnInit {
 
     const searchForm = this.searchForm.value;
     const data = {
-      transactionNo: searchForm.transactionNo,
+      invoiceNo: searchForm.invoiceNo,
     }
 
     let url = "/api/v1/ffmc/get/transfer/to/ffmc/list?size="

@@ -5,16 +5,19 @@ import { Router } from '@angular/router';
 import { NgxIndexedDBService } from 'ngx-indexed-db';
 import { NgxSpinnerService } from 'ngx-spinner';
 import { ToastrService } from 'ngx-toastr';
+import { DialogService } from 'primeng/dynamicdialog';
 import { Constant } from 'src/app/constant/constant';
 import { HttpService } from 'src/app/services/http.service';
 import { formateDate, getDropdownArray, getDropdownObj, getKeyValue, getObjKeyVal, validateFormFields } from 'src/app/shared/function/function';
 import { ReqMethod } from 'src/app/shared/function/method';
+import { CityCreationComponent } from 'src/app/transaction/Master/city/city-creation/city-creation.component';
 import { environment } from 'src/environments/environment';
 
 @Component({
   selector: 'app-search-customer',
   templateUrl: './search-customer.component.html',
-  styleUrls: ['./search-customer.component.scss']
+  styleUrls: ['./search-customer.component.scss'],
+  providers: [DialogService]
 })
 export class SearchCustomerComponent implements OnInit {
 
@@ -24,6 +27,7 @@ export class SearchCustomerComponent implements OnInit {
   public loadingText: string;
   public isEncasement = false;
   public viewDocument = false;
+  public isNewCity = false;
   public showCustomerPage = false;
   public customerTypeList = [];
 
@@ -41,13 +45,16 @@ export class SearchCustomerComponent implements OnInit {
     private spinner: NgxSpinnerService,
     public toastr: ToastrService,
     public httpService: HttpService,
-    private dbService: NgxIndexedDBService
+    private dbService: NgxIndexedDBService,
+    public dialogService: DialogService
   ) {
     this.getAllDocTypeList();
     this.getCustomerTypeList();
     this.getProfileTypeList();
     this.getAddressTypeList();
     this.getAllCountryList();
+    this.getAllStateList(101);
+    
   }
 
   ngOnInit(): void {
@@ -70,7 +77,7 @@ export class SearchCustomerComponent implements OnInit {
       profileType: ['', Validators.required],
       fileName: [''],
       docBase64: [''],
-      arrivalDate: [''],
+      arrivalDate: [],
       gender: ['Male'],
 
       addressType: ['', Validators.required],
@@ -86,14 +93,10 @@ export class SearchCustomerComponent implements OnInit {
 
     let searchForm = this.searchForm.value;
     let mobileNo = getObjKeyVal(searchForm, "mobileNo", "");
-
     if (this.searchForm.invalid) {
       validateFormFields(this.searchForm);
       return;
-    } else if (mobileNo.length < 10) {
-      this.createForm.reset();
-      return false;
-    }
+    } 
 
     this.loadingText = "Searching . Please wait...";
     this.spinner.show("main-spiner");
@@ -105,15 +108,15 @@ export class SearchCustomerComponent implements OnInit {
         this.spinner.hide("main-spiner");
         if (data.respCode == Constant.respCode200) {
           this.toastr.success(data.respDescription);
-          this.isEncasement = true;
           this.showCustomerPage = true;
 
           let customer = data.payload;
           this.dbService.clear('customer').subscribe((dKey) => {
               this.dbService.add('customer', customer).subscribe((dKey) => {
+                this.isEncasement = true;
+                document.body.scrollTop = 0;
               });
           });
-
 
           this.createForm['controls']["id"].setValue(customer.id);
           this.createForm['controls']["customerName"].setValue(customer.name);
@@ -121,7 +124,7 @@ export class SearchCustomerComponent implements OnInit {
           this.createForm['controls']["email"].setValue(customer.email);
           this.createForm['controls']["email"].setValue(customer.email);
           this.createForm['controls']["documentNo"].setValue(customer.documentNo);
-          this.createForm['controls']["arrivalDate"].setValue(customer.arrivalDate);
+          this.createForm['controls']["arrivalDate"].setValue(new Date(customer.arrivalDate));
           this.createForm['controls']["gender"].setValue(customer.geneder);
           this.createForm['controls']["fileName"].setValue(customer.docAttachement);
 
@@ -159,6 +162,9 @@ export class SearchCustomerComponent implements OnInit {
 
           let searchForm = this.searchForm.value;
           this.createForm['controls']["mobileNo"].setValue(searchForm.mobileNo);
+          this.createForm['controls']["country"].setValue({id: 101, name: 'India'});
+          this.createForm['controls']["arrivalDate"].setValue(new Date());
+          this.getAllStateList(101);
         }
       }, (err: HttpErrorResponse) => {
         this.isEncasement = false;
@@ -207,7 +213,6 @@ export class SearchCustomerComponent implements OnInit {
       address: getObjKeyVal(creationForm, "address", ""),
       pinCode: getObjKeyVal(creationForm, "pinCode", ""),
     }
-
 
     let url = "/api/v1/customer/add/new/customer";
     this.httpService.callAuthApi(url, data, ReqMethod.POST)
@@ -298,8 +303,7 @@ export class SearchCustomerComponent implements OnInit {
   }
 
   getAllStateList(event) {
-
-    let countryId = (event.value) ? event.value.id : 0;
+    let countryId = (event.value) ? event.value.id : event;
     let url = "/api/v1/master/get/state/list?id=" + countryId;
     this.httpService.callAuthApi(url, {}, ReqMethod.GET)
       .subscribe(data => {
@@ -328,8 +332,9 @@ export class SearchCustomerComponent implements OnInit {
   }
 
   getAllCityList(event) {
-    let stateId = (event.value) ? event.value.id : 0;
-
+   
+    this.isNewCity = true;
+    let stateId = (event.value) ? event.value.id : event;
     let url = "/api/v1/master/get/city/list?id=" + stateId;
     this.httpService.callAuthApi(url, {}, ReqMethod.GET)
       .subscribe(data => {
@@ -438,5 +443,30 @@ export class SearchCustomerComponent implements OnInit {
       });
 
   }
+
+
+  addNewCity(){
+      const createForm = this.createForm.value;
+      let stateId = createForm.state.id;
+      
+      let data = {
+        stateId:getObjKeyVal(createForm['state'],'id',0),
+        stateName:getObjKeyVal(createForm['state'],'name','')
+      }
+
+      const ref = this.dialogService.open(CityCreationComponent, {
+        data: data,
+        header: '',
+        width: '50%'
+      });
+
+      ref.onClose.subscribe((data: any) => {
+        if(data){
+          this.getAllCityList(getObjKeyVal(data,'stateId',0));
+        }
+      });
+
+  }
+
 
 }

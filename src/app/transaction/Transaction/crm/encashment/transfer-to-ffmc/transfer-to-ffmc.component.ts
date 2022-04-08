@@ -26,7 +26,7 @@ export class TransferToFfmcComponent implements OnInit {
   public paymentMoodList: any = [];
   public paymentTypeList: any = [];
   public tranTypeList: any = [];
-  public viewBankDetails:boolean;
+  public viewBankDetails= new Object();
 
   constructor(
     private formBuilder: FormBuilder,
@@ -38,7 +38,7 @@ export class TransferToFfmcComponent implements OnInit {
     this.currentDate = this.datePipe
     .transform(new Date(), 'dd-MM-yyyy');
     this.getCurrencyList();
-    this.getPaymentMoodList();
+    //this.getPaymentMoodList();
     this.getPaymentTypeList();
     this.getTranTypeList();
   }
@@ -47,8 +47,16 @@ export class TransferToFfmcComponent implements OnInit {
     this.initilizeForm();
   }
 
+  get ffmcF() { return this.creationForm.controls; }
+  get ffmcT() { return this.ffmcF.ffmc as FormArray; }
+
   initilizeForm() {
     this.creationForm = this.formBuilder.group({
+      ffmc: new FormArray([])
+    });
+
+    for (let i = 0; i < 1; i++) {
+      this.ffmcT.push(this.formBuilder.group({
         currency: ['',Validators.required],
         puchasecurrencyRate: [0,Validators.required],
         availableCurrencyAmount: [0,Validators.required],
@@ -59,19 +67,91 @@ export class TransferToFfmcComponent implements OnInit {
         bankName: [''],
         branchName: [''],
         address: [''],
-        paymentMode: ['',Validators.required],
+        paymentMode: [''],
         paymentType: [''],
         transactionNo: ['',],
         transactionType: [''],
-    }, {
-      validator: LessMatch('availableCurrencyAmount','bookingCurrencyAmount')
-    });
+      },{
+        validator: this.validateCurrency('availableCurrencyAmount','bookingCurrencyAmount')
+      }));
+    }
+
   }
 
-  showBankDetails(rowData){
+  validateCurrency(controlName: string, matchingControlName: string) {
+    return (formGroup: FormGroup) => {
+      const availableControl = formGroup.controls['availableCurrencyAmount'];
+      const matchingControl = formGroup.controls['bookingCurrencyAmount'];
+      const currentCurrency = formGroup.controls['currency'];
+      const  currencyId = getObjKeyVal(currentCurrency['value'],'id',0);
+
+      // set error on matchingControl if validation fails
+      if (matchingControl.value=="") {
+        matchingControl.setErrors({ required: true });
+        return;
+      } else {
+        matchingControl.setErrors(null);
+      }
+
+
+      if (availableControl.value < matchingControl.value) {
+        matchingControl.setErrors({ lessMatch: true });
+        return;
+      } else {
+        matchingControl.setErrors(null);
+      }
+
+      let totalSumOfSurrency = 0;
+      let creationForm = this.creationForm.value;
+      creationForm.ffmc.forEach((value, index, self) => {
+        let element = creationForm.ffmc[index];
+        let tmpCurrencyId = getObjKeyVal(element['currency'],'id',-1);
+        if(currencyId==tmpCurrencyId){
+          totalSumOfSurrency =totalSumOfSurrency+parseInt(element.bookingCurrencyAmount);
+        }
+      });
+
+      if (availableControl.value < totalSumOfSurrency) {
+        matchingControl.setErrors({ tootalLessMatch: true });
+        return;
+      } else {
+        matchingControl.setErrors(null);
+      }
+    }
+  }
+
+
+
+  removeFfmsRow(row) {
+    if (this.ffmcT.length > 1)
+      this.ffmcT.removeAt(row);
+  }
+
+  addFfmcRow(row) {
+    this.ffmcT.push(this.formBuilder.group({
+      currency: ['',Validators.required],
+      puchasecurrencyRate: [0,Validators.required],
+      availableCurrencyAmount: [0,Validators.required],
+      bookingCurrencyAmount: ['',Validators.required,],
+      bookingCurrencyRate: ['',Validators.required],
+      totalInrAmount: [0,Validators.required],
+
+      bankName: [''],
+      branchName: [''],
+      address: [''],
+      paymentMode: [''],
+      paymentType: [''],
+      transactionNo: ['',],
+      transactionType: [''],
+    },{
+      validator: this.validateCurrency('availableCurrencyAmount','bookingCurrencyAmount')
+    }));
+  }
+
+  showBankDetails(rowData,row){
     if(rowData.value.paymentMode.id==2){
-      this.viewBankDetails = true;
-      let formCtrl = this.creationForm['controls'];
+      this.viewBankDetails[row] = true;
+      let formCtrl = this.ffmcT.controls[row]['controls'];
       formCtrl['paymentType'].setValidators([Validators.required]);
       formCtrl['paymentType'].updateValueAndValidity();
       formCtrl['transactionNo'].setValidators([Validators.required]);
@@ -81,8 +161,8 @@ export class TransferToFfmcComponent implements OnInit {
       formCtrl['branchName'].setValidators([Validators.required]);
       formCtrl['branchName'].updateValueAndValidity();
     }else {
-      this.viewBankDetails = false;
-      let formCtrl = this.creationForm['controls'];
+      this.viewBankDetails[row] = false;
+      let formCtrl = this.ffmcT.controls[row]['controls'];
       formCtrl['paymentType'].setValue("");
       formCtrl['transactionType'].setValue("");
       formCtrl['transactionNo'].setValue("");
@@ -101,39 +181,45 @@ export class TransferToFfmcComponent implements OnInit {
     }
   }
 
-  getTotlaInrAmount(){
-    let form= this.creationForm.value;
+  getTotlaInrAmount(row){
+    let form= this.ffmcT.value[row];
     let totalInr = form.bookingCurrencyAmount*form.bookingCurrencyRate;
-    this.creationForm.controls['totalInrAmount'].setValue(totalInr);
+    this.ffmcT.controls[row]['controls']['totalInrAmount'].setValue(totalInr);
   }
 
 
 
   transferToFfmc(){
-    if (validateFormFields(this.creationForm)) {
+    if (validateDynamicFormFields(this.creationForm,'ffmc')) {
       return;
     }
+    
 
     this.loadingText = "Transfering to ffmc. Please wait.";
     this.spinner.show("main-spiner");
 
+    let ffmcList = new Array();
     let creationForm = this.creationForm.value;
+    creationForm.ffmc.forEach((value, index, self) => {
+      let element = creationForm.ffmc[index];
+      let tmp = {
+        currency: getKeyValue(element,'currency','id',0),
+        currencyAmount:getObjKeyVal(element,'bookingCurrencyAmount',0),
+        sellCurrencyRate:getObjKeyVal(element,'bookingCurrencyRate',0),
+        currencyRate:getObjKeyVal(element,'puchasecurrencyRate',0),
+  
+        address:getObjKeyVal(element,'address',''),
+        bankName:getObjKeyVal(element,'bankName',''),
+        branchName:getObjKeyVal(element,'branchName',''),
+        paymentMode:getKeyValue(element,'paymentMode','id',0),
+        paymentType:getKeyValue(element,'paymentType','id',0),
+        transactionType:getKeyValue(element,'transactionType','id',0),
+        transactionNo:getObjKeyVal(element,'transactionNo',0),
+      }
+      ffmcList.push(tmp);
+    });
 
-    let data = {
-      currency: getKeyValue(creationForm,'currency','id',0),
-      currencyAmount:getObjKeyVal(creationForm,'bookingCurrencyAmount',0),
-      sellCurrencyRate:getObjKeyVal(creationForm,'bookingCurrencyRate',0),
-      currencyRate:getObjKeyVal(creationForm,'puchasecurrencyRate',0),
-
-      address:getObjKeyVal(creationForm,'address',''),
-      bankName:getObjKeyVal(creationForm,'bankName',''),
-      branchName:getObjKeyVal(creationForm,'branchName',''),
-      paymentMode:getKeyValue(creationForm,'paymentMode','id',0),
-      paymentType:getKeyValue(creationForm,'paymentType','id',0),
-      transactionType:getKeyValue(creationForm,'transactionType','id',0),
-      transactionNo:getObjKeyVal(creationForm,'transactionNo',0),
-    }
-
+    let data = { ffmc:ffmcList }
     let url = "/api/v1/ffmc/transfer/to/ffmc";
     this.httpService.callAuthApi(url,data,ReqMethod.POST)
       .subscribe(data => {
@@ -192,11 +278,12 @@ export class TransferToFfmcComponent implements OnInit {
       });
   }
 
-  getCurrencyListById(event){
+  getCurrencyListById(event,row){
+    let id = event.value.id;
+
     this.loadingText = "Fetching available currency. Please wait.";
     this.spinner.show("main-spiner");
 
-    let id = event.value.id;
     let url = "/api/v1/ffmc/get/currency/list/by/currency/id?currencyId="+id;
     this.httpService.callAuthApi(url, {}, ReqMethod.GET)
       .subscribe(data => {
@@ -204,11 +291,11 @@ export class TransferToFfmcComponent implements OnInit {
        
         if (data.respCode === Constant.respCode200) {
             let obj = data.payload;
-            this.creationForm.controls['puchasecurrencyRate'].setValue(getObjKeyVal(obj,'purchaseRate',0));
-            this.creationForm.controls['availableCurrencyAmount'].setValue(getObjKeyVal(obj,'totalAmount',0));
+            this.ffmcT.controls[row]['controls']['puchasecurrencyRate'].setValue(getObjKeyVal(obj,'purchaseRate',0));
+            this.ffmcT.controls[row]['controls']['availableCurrencyAmount'].setValue(getObjKeyVal(obj,'totalAmount',0));
         } else {
-          this.creationForm.controls['puchasecurrencyRate'].setValue(0);
-          this.creationForm.controls['availableCurrencyAmount'].setValue(0);
+          this.ffmcT.controls[row]['controls']['puchasecurrencyRate'].setValue(0);
+          this.ffmcT.controls[row]['controls']['availableCurrencyAmount'].setValue(0);
         }
       }, (err: HttpErrorResponse) => {
         this.spinner.hide("main-spiner");
@@ -300,5 +387,6 @@ export class TransferToFfmcComponent implements OnInit {
         }
       });
   }
+  
 
 }
